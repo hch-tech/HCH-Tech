@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Modern History of India - CBT Exam | SSC & RRB</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- jsPDF CDN for PDF Answer Key Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 h-full flex flex-col antialiased no-select min-h-screen" oncontextmenu="return false;">
+
+    <!-- Custom Modal for Notifications & Malpractice Warnings -->
+    <div id="customModal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full shadow-2xl border border-slate-100 my-auto">
+            <div class="flex items-center space-x-3 mb-4">
+                <div id="modalIcon" class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl font-bold shrink-0">
+                    <i class="fa-solid fa-info"></i>
+                </div>
+                <h3 id="modalTitle" class="text-base sm:text-lg font-bold text-slate-900">Notice</h3>
+            </div>
+            <p id="modalMessage" class="text-slate-600 mb-6 text-xs sm:text-sm leading-relaxed">Notification content goes here.</p>
+            <div class="flex justify-end space-x-3">
+                <button id="modalCancelBtn" onclick="closeModal(false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs sm:text-sm transition hidden cursor-pointer">Cancel</button>
+                <button id="modalOkBtn" onclick="closeModal(true)" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs sm:text-sm shadow-md transition cursor-pointer">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md px-3 sm:px-4 py-2.5 flex items-center justify-between shrink-0 z-20">
+        <div class="flex items-center space-x-2 sm:space-x-3 truncate">
+            <div class="bg-blue-600 text-white p-1.5 sm:p-2 rounded-xl flex items-center justify-center font-bold shadow-sm shrink-0">
+                <i class="fa-solid fa-landmark text-sm sm:text-lg"></i>
+            </div>
+            <div class="truncate">
+                <h1 class="font-bold text-sm sm:text-lg tracking-tight truncate">Modern History of India</h1>
+                <p class="text-[10px] sm:text-xs text-slate-400 truncate">SSC CGL / CHSL & RRB Exams</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-2 sm:space-x-4 shrink-0">
+            <!-- Warning Badge -->
+            <div id="warningBadge" class="hidden items-center space-x-1 bg-rose-950/80 border border-rose-600 px-2 sm:px-3 py-1 rounded-xl text-rose-300 text-[10px] sm:text-xs font-semibold">
+                <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
+                <span>Warn: <span id="warningCountDisplay" class="font-bold text-white">0</span>/3</span>
+            </div>
+
+            <!-- Countdown Timer Container -->
+            <div id="timerContainer" class="hidden items-center space-x-1.5 bg-slate-800 border border-slate-700 px-2.5 sm:px-3 py-1 rounded-xl">
+                <i class="fa-regular fa-clock text-amber-400 text-xs sm:text-sm"></i>
+                <span id="timerDisplay" class="font-mono font-bold text-amber-400 text-xs sm:text-base">30:00</span>
+            </div>
+
+            <div id="userHeaderBadge" class="hidden md:flex items-center space-x-2 border-l border-slate-700 pl-4">
+                <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white text-xs">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div>
+                    <p id="headerStudentName" class="text-xs font-semibold text-slate-200 truncate max-w-[100px]">Candidate</p>
+                    <p class="text-[10px] text-emerald-400 font-medium flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block mr-1"></span>Active</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex overflow-hidden relative">
+
+        <!-- SCREEN 1: CANDIDATE REGISTRATION & INSTRUCTIONS -->
+        <div id="instructionScreen" class="absolute inset-0 bg-slate-100 z-10 flex flex-col p-3 sm:p-8 overflow-y-auto">
+            <div class="max-w-4xl mx-auto w-full bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200/80 p-5 sm:p-10 my-auto">
+                <div class="border-b border-slate-100 pb-4 sm:pb-6 mb-4 sm:mb-6">
+                    <span class="bg-blue-50 text-blue-700 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">CBT Mock Test</span>
+                    <h2 class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2">Modern History of India (SSC & RRB)</h2>
+                    <p class="text-slate-500 text-xs sm:text-sm mt-1">Please enter your name to start your exam session.</p>
+                </div>
+
+                <!-- Registration Input (Only Student Full Name) -->
+                <div class="bg-blue-50/60 p-4 sm:p-6 rounded-2xl border border-blue-100 mb-6 sm:mb-8">
+                    <h3 class="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 sm:mb-4 flex items-center">
+                        <i class="fa-solid fa-user-pen text-blue-600 mr-2 text-sm sm:text-base"></i> Candidate Registration
+                    </h3>
+                    <div>
+                        <label for="studentNameInput" class="block text-xs font-bold text-slate-700 uppercase mb-2">Student Full Name <span class="text-rose-500">*</span></label>
+                        <input type="text" id="studentNameInput" placeholder="Enter your full name (e.g. Anish Kumar)" class="w-full px-3.5 py-2.5 sm:py-3 rounded-xl border border-slate-300 bg-white text-slate-900 text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-medium transition">
+                    </div>
+                </div>
+
+                <!-- Key Test Details -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
+                    <div class="bg-slate-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/80 text-center sm:text-left flex flex-col sm:flex-row items-center sm:space-x-4">
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-sm sm:text-xl font-bold shrink-0 mb-1 sm:mb-0">
+                            <i class="fa-solid fa-list-ol"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase">Questions</p>
+                            <p class="text-xs sm:text-lg font-bold text-slate-800">50 MCQs</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/80 text-center sm:text-left flex flex-col sm:flex-row items-center sm:space-x-4">
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-sm sm:text-xl font-bold shrink-0 mb-1 sm:mb-0">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase">Duration</p>
+                            <p class="text-xs sm:text-lg font-bold text-slate-800">30 Mins</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/80 text-center sm:text-left flex flex-col sm:flex-row items-center sm:space-x-4">
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm sm:text-xl font-bold shrink-0 mb-1 sm:mb-0">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase">Marking</p>
+                            <p class="text-xs sm:text-lg font-bold text-slate-800">+1 | -0.33</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lock Screen Rules -->
+                <div class="space-y-2 sm:space-y-3 mb-6 sm:mb-8 bg-amber-50/70 p-4 sm:p-6 rounded-2xl border border-amber-200/60 text-xs sm:text-sm text-slate-700">
+                    <h3 class="font-bold text-slate-900 text-xs sm:text-base mb-1 flex items-center">
+                        <i class="fa-solid fa-shield-halved text-amber-600 mr-2"></i> Anti-Malpractice Guidelines:
+                    </h3>
+                    <ul class="list-disc pl-4 space-y-1 text-slate-800 font-medium">
+                        <li><strong>Fullscreen & Focus:</strong> Switching apps or tabs triggers security warnings.</li>
+                        <li><strong>Max 3 Warnings:</strong> Accruing <strong>3 warnings</strong> auto-submits your test.</li>
+                        <li><strong>Proctored Lockdown:</strong> Text selection and copying are disabled.</li>
+                    </ul>
+                </div>
+
+                <div class="flex items-center space-x-2.5 mb-6">
+                    <input type="checkbox" id="agreeCheck" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer shrink-0">
+                    <label for="agreeCheck" class="text-xs sm:text-sm font-semibold text-slate-700 cursor-pointer leading-tight">I agree to comply with all examination regulations.</label>
+                </div>
+
+                <div class="flex justify-end">
+                    <button onclick="startTest()" class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl sm:rounded-2xl shadow-lg shadow-blue-500/20 transition flex items-center justify-center space-x-2 text-sm sm:text-base cursor-pointer">
+                        <i class="fa-solid fa-play text-xs"></i>
+                        <span>Start Proctored Test</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: EXAM INTERFACE -->
+        <div id="examScreen" class="flex-1 flex flex-col lg:flex-row hidden overflow-hidden w-full">
+            <!-- Left Panel: Question Display -->
+            <div class="flex-1 flex flex-col bg-white overflow-y-auto border-r border-slate-200 h-full">
+                <!-- Question Top Status Bar -->
+                <div class="bg-slate-50 border-b border-slate-200 px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2 shrink-0">
+                    <div class="flex items-center space-x-2">
+                        <span id="currentQNumBadge" class="bg-blue-600 text-white font-bold text-xs sm:text-sm px-2.5 py-1 rounded-lg sm:rounded-xl shadow-xs">Q. 1</span>
+                        <span id="questionTag" class="text-[10px] sm:text-xs font-semibold text-slate-600 bg-slate-200 px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg uppercase tracking-wider truncate max-w-[130px] sm:max-w-none">Category</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <!-- Mobile Toggle for Question Palette -->
+                        <button onclick="toggleMobilePalette()" class="lg:hidden px-2.5 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-lg flex items-center space-x-1">
+                            <i class="fa-solid fa-th text-blue-600"></i>
+                            <span>Palette</span>
+                        </button>
+                        <div class="hidden sm:flex items-center space-x-3 text-xs font-semibold text-slate-600">
+                            <span class="flex items-center text-emerald-600"><i class="fa-solid fa-plus-circle mr-1"></i> +1.0</span>
+                            <span class="flex items-center text-rose-600"><i class="fa-solid fa-minus-circle mr-1"></i> -0.33</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Question & Options Area -->
+                <div class="p-4 sm:p-8 flex-1 max-w-3xl w-full mx-auto overflow-y-auto">
+                    <div class="mb-4 sm:mb-6">
+                        <h3 id="questionText" class="text-base sm:text-xl font-bold text-slate-900 leading-relaxed">Loading question text...</h3>
+                    </div>
+
+                    <div id="optionsContainer" class="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Bottom Navigation Buttons -->
+                <div class="bg-slate-50 border-t border-slate-200 px-3 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-2 shrink-0">
+                    <div class="flex items-center space-x-2">
+                        <button onclick="markForReviewAndNext()" class="px-2.5 sm:px-3.5 py-2 bg-purple-100 hover:bg-purple-200 text-purple-800 font-semibold text-xs sm:text-sm rounded-xl transition flex items-center space-x-1 cursor-pointer">
+                            <i class="fa-solid fa-bookmark text-[10px] sm:text-xs"></i>
+                            <span class="hidden sm:inline">Mark for Review</span>
+                            <span class="sm:hidden">Review</span>
+                        </button>
+                        <button onclick="clearResponse()" class="px-2.5 sm:px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs sm:text-sm rounded-xl transition flex items-center space-x-1 cursor-pointer">
+                            <i class="fa-solid fa-eraser text-[10px] sm:text-xs"></i>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                    <div>
+                        <button onclick="saveAndNext()" class="px-4 sm:px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center space-x-1.5 cursor-pointer">
+                            <span>Save & Next</span>
+                            <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Question Palette (Responsive Drawer on Mobile) -->
+            <div id="sidebarPanel" class="hidden lg:flex fixed lg:relative inset-x-0 bottom-0 top-14 lg:top-0 z-30 w-full lg:w-80 bg-slate-50 border-t lg:border-t-0 lg:border-l border-slate-200 flex-col shrink-0">
+                <div class="p-3 sm:p-4 bg-white border-b border-slate-200 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center">
+                        <i class="fa-solid fa-th text-blue-600 mr-2"></i> Question Palette
+                    </h3>
+                    <button onclick="toggleMobilePalette()" class="lg:hidden text-slate-500 hover:text-slate-700 p-1">
+                        <i class="fa-solid fa-xmark text-base"></i>
+                    </button>
+                </div>
+
+                <!-- Legend Indicator -->
+                <div class="p-2.5 bg-slate-100 border-b border-slate-200 grid grid-cols-2 gap-1.5 text-[10px] sm:text-[11px] font-semibold text-slate-600">
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 rounded bg-emerald-500 inline-block"></span>
+                        <span>Answered</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 rounded bg-rose-500 inline-block"></span>
+                        <span>Not Answered</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 rounded bg-purple-600 inline-block"></span>
+                        <span>Marked Review</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 rounded bg-slate-200 border border-slate-300 inline-block"></span>
+                        <span>Not Visited</span>
+                    </div>
+                </div>
+
+                <!-- Palette Numbers Grid -->
+                <div class="flex-1 p-3 sm:p-4 overflow-y-auto">
+                    <div id="paletteGrid" class="grid grid-cols-5 sm:grid-cols-5 gap-2">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- Submit Exam Button -->
+                <div class="p-3 sm:p-4 bg-white border-t border-slate-200">
+                    <button onclick="confirmSubmitTest()" class="w-full py-2.5 sm:py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center space-x-2 cursor-pointer">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Submit Examination</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: SCORECARD & ANSWER KEY -->
+        <div id="scorecardScreen" class="absolute inset-0 bg-slate-100 z-20 flex flex-col overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto w-full p-3 sm:p-8 my-auto">
+                <!-- Scorecard Header Banner -->
+                <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200/80 p-5 sm:p-10 mb-6 sm:mb-8">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-4 sm:pb-6 mb-4 sm:mb-6 gap-3">
+                        <div>
+                            <span class="bg-emerald-50 text-emerald-700 text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Exam Completed</span>
+                            <h2 class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-1 sm:mt-2">Performance Scorecard</h2>
+                            <p class="text-slate-500 text-xs sm:text-sm mt-1">Candidate: <strong id="scorecardStudentName" class="text-slate-800">---</strong></p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                            <button onclick="downloadAnswerKeyPDF()" class="w-full sm:w-auto px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center space-x-2 cursor-pointer">
+                                <i class="fa-solid fa-file-pdf text-rose-400"></i>
+                                <span>Download Answer Key (PDF)</span>
+                            </button>
+                            <button onclick="location.reload()" class="w-full sm:w-auto px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm rounded-xl transition flex items-center justify-center space-x-2 cursor-pointer">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                <span>Retake Test</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 mb-4 sm:mb-6">
+                        <div class="bg-slate-50 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-100 text-center">
+                            <p class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase mb-0.5">Final Score</p>
+                            <p id="resFinalScore" class="text-xl sm:text-3xl font-extrabold text-blue-600">0.00 <span class="text-xs font-normal text-slate-400">/ 50</span></p>
+                        </div>
+                        <div class="bg-slate-50 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-100 text-center">
+                            <p class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase mb-0.5">Accuracy</p>
+                            <p id="resAccuracy" class="text-xl sm:text-3xl font-extrabold text-emerald-600">0%</p>
+                        </div>
+                        <div class="bg-slate-50 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-100 text-center">
+                            <p class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase mb-0.5">Correct / Wrong</p>
+                            <p class="text-base sm:text-xl font-bold text-slate-800 mt-1"><span class="text-emerald-600" id="resCorrect">0</span> / <span class="text-rose-600" id="resIncorrect">0</span></p>
+                        </div>
+                        <div class="bg-slate-50 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-100 text-center">
+                            <p class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase mb-0.5">Time Taken</p>
+                            <p id="resTimeTaken" class="text-base sm:text-xl font-bold text-slate-800 mt-1">00:00</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-xs font-semibold text-slate-600 bg-slate-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <span>Attempted Questions:</span>
+                            <span id="resAttempted" class="text-slate-900 font-bold">0 / 50</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Unattempted Questions:</span>
+                            <span id="resUnattempted" class="text-slate-900 font-bold">50</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Negative Deduction:</span>
+                            <span id="resNegMarks" class="text-rose-600 font-bold">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Answer Explanations List -->
+                <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200/80 p-5 sm:p-10">
+                    <div class="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-slate-100">
+                        <h3 class="text-base sm:text-xl font-bold text-slate-900 flex items-center">
+                            <i class="fa-solid fa-key text-amber-500 mr-2"></i> Solution & Explanations
+                        </h3>
+                    </div>
+                    <div id="solutionListContainer" class="space-y-4 sm:space-y-6">
+                        <!-- Dynamic solution cards -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // 50 Unique Modern History Questions for SSC & RRB Exams
+        const questionsData = [
+            {
+                id: 1,
+                tag: "European Arrival",
+                question: "Vasco da Gama, the Portuguese explorer, arrived at which Indian port in May 1498, discovering a new sea route to India?",
+                options: ["Calicut (Kozhikode)", "Cochin (Kochi)", "Goa", "Surat"],
+                correct: 0,
+                explanation: "Vasco da Gama reached Calicut on 20 May 1498, where he was received by the local ruler Zamorin (Samudiri), marking the start of European sea routes to India."
+            },
+            {
+                id: 2,
+                tag: "British Rule Expansion",
+                question: "Which historic battle fought in June 1757 established the political foothold of the British East India Company in Bengal?",
+                options: ["Battle of Buxar", "Battle of Plassey", "Battle of Wandewash", "Battle of Chillianwala"],
+                correct: 1,
+                explanation: "The Battle of Plassey (23 June 1757) was fought between Siraj-ud-Daulah and the East India Company under Robert Clive, laying the foundation of British political power."
+            },
+            {
+                id: 3,
+                tag: "British Rule Expansion",
+                question: "Which decisive battle fought in 1764 established firm British administrative mastery over Bengal, Bihar, and Orissa?",
+                options: ["Battle of Wandewash", "Battle of Buxar", "Third Battle of Panipat", "Battle of Chillianwala"],
+                correct: 1,
+                explanation: "The Battle of Buxar (1764) saw Hector Munro defeat the combined forces of Mir Qasim, Shuja-ud-Daulah, and Shah Alam II, leading to the Treaty of Allahabad (1765)."
+            },
+            {
+                id: 4,
+                tag: "Land Revenue Systems",
+                question: "Who introduced the 'Permanent Settlement' (Zamindari System) in Bengal, Bihar, and Odisha in 1793?",
+                options: ["Lord Cornwallis", "Lord Wellesley", "Lord Dalhousie", "Warren Hastings"],
+                correct: 0,
+                explanation: "Governor-General Lord Cornwallis introduced the Permanent Settlement in 1793, recognizing landlords (Zamindars) as perpetual owners of land with fixed revenue."
+            },
+            {
+                id: 5,
+                tag: "British Expansion Policies",
+                question: "The aggressive annexation policy 'Doctrine of Lapse' was devised and implemented by which Governor-General?",
+                options: ["Lord Wellesley", "Lord Dalhousie", "Lord Curzon", "Lord Bentinck"],
+                correct: 1,
+                explanation: "Lord Dalhousie (1848–1856) applied the Doctrine of Lapse to annex Indian princely states whose rulers died without a natural male heir."
+            },
+            {
+                id: 6,
+                tag: "Revolt of 1857",
+                question: "Who was proclaimed as the symbolic leader and Emperor of India during the 1857 Revolt by sepoys in Delhi?",
+                options: ["Bahadur Shah I", "Shah Alam II", "Bahadur Shah II (Zafar)", "Bakht Khan"],
+                correct: 2,
+                explanation: "The rebel soldiers declared the elderly Mughal Emperor Bahadur Shah II (Bahadur Shah Zafar) as 'Shahenshah-e-Hindustan'."
+            },
+            {
+                id: 7,
+                tag: "Revolt of 1857",
+                question: "Nana Sahib (Dhondu Pant), who led the 1857 rebellion in Kanpur, was the adopted son of which Peshwa?",
+                options: ["Baji Rao I", "Balaji Baji Rao", "Baji Rao II", "Madhavrao I"],
+                correct: 2,
+                explanation: "Nana Sahib was the adopted son of Peshwa Baji Rao II. The British refusal to continue his father's pension triggered his leadership in Kanpur."
+            },
+            {
+                id: 8,
+                tag: "Revolt of 1857",
+                question: "Begum Hazrat Mahal led the resistance against the British during the 1857 uprising from which center?",
+                options: ["Lucknow", "Jhansi", "Bareilly", "Gwalior"],
+                correct: 0,
+                explanation: "Begum Hazrat Mahal led the rebellion in Lucknow (Awadh) after her husband Nawab Wajid Ali Shah was deposed by the British."
+            },
+            {
+                id: 9,
+                tag: "Socio-Religious Movements",
+                question: "Who founded the 'Brahmo Samaj' in Calcutta in 1828 to advocate monotheism and eradicate social evils like Sati?",
+                options: ["Swami Vivekananda", "Raja Ram Mohan Roy", "Debendranath Tagore", "Ishwar Chandra Vidyasagar"],
+                correct: 1,
+                explanation: "Raja Ram Mohan Roy, known as the 'Father of Modern Indian Renaissance', established the Brahmo Samaj in 1828."
+            },
+            {
+                id: 10,
+                tag: "Socio-Religious Movements",
+                question: "The Arya Samaj was established in Mumbai in 1875 by which socio-religious reformer who gave the call 'Back to the Vedas'?",
+                options: ["Swami Dayanand Saraswati", "Swami Vivekananda", "Atmaram Pandurang", "Jyotirao Phule"],
+                correct: 0,
+                explanation: "Swami Dayanand Saraswati founded the Arya Samaj in 1875 to reform Hinduism based on the authority of the original Vedas."
+            },
+            {
+                id: 11,
+                tag: "Socio-Religious Movements",
+                question: "Who established the 'Satya Shodhak Samaj' in Maharashtra in 1873 to empower lower castes and women?",
+                options: ["Dr. B. R. Ambedkar", "Jyotirao Phule", "Periyar E.V.R.", "G. H. Deshmukh"],
+                correct: 1,
+                explanation: "Mahatma Jyotirao Phule founded the Satya Shodhak Samaj (Truth Seekers' Society) to liberate non-Brahmin castes from socio-religious exploitation."
+            },
+            {
+                id: 12,
+                tag: "Indian National Congress",
+                question: "The Indian National Congress (INC) was established in December 1885 in Bombay under whose initiative?",
+                options: ["W. C. Bonnerjee", "Allan Octavian Hume", "Dadabhai Naoroji", "George Yule"],
+                correct: 1,
+                explanation: "A. O. Hume, a retired British civil servant, played the pivotal role as the founder-organizer of the Indian National Congress in 1885."
+            },
+            {
+                id: 13,
+                tag: "National Movement",
+                question: "Which Viceroy of India announced the Partition of Bengal in 1905, igniting the Swadeshi Movement?",
+                options: ["Lord Lytton", "Lord Ripon", "Lord Curzon", "Lord Minto"],
+                correct: 2,
+                explanation: "Lord Curzon partitioned Bengal in 1905 under the guise of administrative efficiency, provoking intense anti-partition and Swadeshi protests."
+            },
+            {
+                id: 14,
+                tag: "National Movement",
+                question: "The split of the Indian National Congress into Moderates and Extremists occurred in 1907 during which session?",
+                options: ["Calcutta Session", "Surat Session", "Lahore Session", "Nagpur Session"],
+                correct: 1,
+                explanation: "The Surat Split of 1907 took place over political strategies regarding Swadeshi and Boycott, presided over by Rash Behari Ghosh."
+            },
+            {
+                id: 15,
+                tag: "National Movement",
+                question: "The All-India Muslim League was established in 1906 under the leadership of Nawab Salimullah in which city?",
+                options: ["Aligarh", "Dhaka", "Lucknow", "Lahore"],
+                correct: 1,
+                explanation: "The Muslim League was founded at Dhaka on 30 December 1906 by Nawab Salimullah, Aga Khan III, and Nawab Mohsin-ul-Mulk."
+            },
+            {
+                id: 16,
+                tag: "National Movement",
+                question: "The historic Lucknow Pact of 1916 achieved a political consensus between the INC and which organization?",
+                options: ["Muslim League", "Hindu Mahasabha", "Justice Party", "Unionist Party"],
+                correct: 0,
+                explanation: "The Lucknow Pact (1916) brought the Moderates, Extremists, and the Muslim League onto a single platform to demand constitutional reforms."
+            },
+            {
+                id: 17,
+                tag: "Gandhian Era",
+                question: "Mahatma Gandhi returned to India from South Africa on 9 January 1915. This date is commemorated in India as:",
+                options: ["National Youth Day", "Pravasi Bharatiya Divas", "Satyagraha Divas", "National Unity Day"],
+                correct: 1,
+                explanation: "9th January is celebrated as Pravasi Bharatiya Divas (Non-Resident Indian Day) to mark Gandhi's return to lead the Indian freedom struggle."
+            },
+            {
+                id: 18,
+                tag: "Gandhian Era",
+                question: "What was Mahatma Gandhi's first Satyagraha movement in India, organized in 1917 to support indigo farmers?",
+                options: ["Kheda Satyagraha", "Champaran Satyagraha", "Ahmedabad Mill Strike", "Rowlatt Satyagraha"],
+                correct: 1,
+                explanation: "Champaran Satyagraha (1917) in Bihar against the oppressive Tinkathia indigo cultivation system was Gandhi's first major civil resistance in India."
+            },
+            {
+                id: 19,
+                tag: "Gandhian Era",
+                question: "The tragic Jallianwala Bagh massacre occurred on 13 April 1919 in Amritsar during which festival?",
+                options: ["Baisakhi", "Diwali", "Holi", "Lohri"],
+                correct: 0,
+                explanation: "Brigadier-General Reginald Dyer ordered troops to fire on an unarmed peaceful gathering celebrating Baisakhi at Jallianwala Bagh."
+            },
+            {
+                id: 20,
+                tag: "Gandhian Era",
+                question: "Why did Mahatma Gandhi abruptly withdraw the nationwide Non-Cooperation Movement in February 1922?",
+                options: ["Passage of Rowlatt Act", "Chauri Chaura Violence", "Arrest of Jawaharlal Nehru", "Third Anglo-Afghan War"],
+                correct: 1,
+                explanation: "In Chauri Chaura (Gorakhpur, UP), an enraged mob set a police station on fire, killing 22 policemen. Committed to non-violence, Gandhi suspended the movement."
+            },
+            {
+                id: 21,
+                tag: "Revolutionary Freedom Struggle",
+                question: "Who along with Batukeshwar Dutt threw low-intensity non-lethal bombs in the Central Legislative Assembly in 1929?",
+                options: ["Bhagat Singh", "Chandrashekhar Azad", "Ram Prasad Bismil", "Rajguru"],
+                correct: 0,
+                explanation: "Bhagat Singh and Batukeshwar Dutt threw bombs in the Assembly on 8 April 1929 to protest the Trade Disputes and Public Safety Bills."
+            },
+            {
+                id: 22,
+                tag: "Revolutionary Freedom Struggle",
+                question: "The Hindustan Socialist Republican Association (HSRA) was reorganized at Feroz Shah Kotla, Delhi, in 1928 under whose leadership?",
+                options: ["Subhas Chandra Bose", "Chandrashekhar Azad", "Surya Sen", "Sachindra Nath Sanyal"],
+                correct: 1,
+                explanation: "Chandrashekhar Azad, along with Bhagat Singh, Sukhdev, and Bhagwati Charan Vohra, founded the HSRA in September 1928."
+            },
+            {
+                id: 23,
+                tag: "National Movement",
+                question: "In which INC session held in December 1929 was the resolution for 'Purna Swaraj' (Complete Independence) passed?",
+                options: ["Karachi Session", "Lahore Session", "Belgaum Session", "Tripuri Session"],
+                correct: 1,
+                explanation: "Presided over by Jawaharlal Nehru, the Lahore Session of 1929 declared 'Purna Swaraj' as the goal and fixed 26 January 1930 as Independence Day."
+            },
+            {
+                id: 24,
+                tag: "Gandhian Era",
+                question: "The Civil Disobedience Movement commenced with Mahatma Gandhi's famous 240-mile march from Sabarmati to which coastal location?",
+                options: ["Dandi", "Dharasana", "Vadaranyam", "Surat"],
+                correct: 0,
+                explanation: "Gandhi started the Dandi March on 12 March 1930 and reached Dandi on 6 April 1930 to break the salt law, inaugurating the movement."
+            },
+            {
+                id: 25,
+                tag: "Constitutional History",
+                question: "How many Round Table Conferences were organized in London between 1930 and 1932 to deliberate Indian constitutional reforms?",
+                options: ["2", "3", "4", "5"],
+                correct: 1,
+                explanation: "Three Round Table Conferences were held. Mahatma Gandhi represented the Indian National Congress only in the Second Round Table Conference (1931)."
+            },
+            {
+                id: 26,
+                tag: "Gandhian Era",
+                question: "The historic Poona Pact of September 1932 was signed between Mahatma Gandhi and which prominent leader in Yerwada Jail?",
+                options: ["B. R. Ambedkar", "M. A. Jinnah", "Subhas Chandra Bose", "Tej Bahadur Sapru"],
+                correct: 0,
+                explanation: "The Poona Pact replaced separate electorates for depressed classes with reserved seats within the general electorate, agreed by Gandhi and Dr. B. R. Ambedkar."
+            },
+            {
+                id: 27,
+                tag: "Constitutional History",
+                question: "Provincial Autonomy was introduced in British India under the provisions of which landmark act?",
+                options: ["Morley-Minto Reforms 1909", "Government of India Act 1919", "Government of India Act 1935", "Indian Independence Act 1947"],
+                correct: 2,
+                explanation: "The Government of India Act 1935 abolished provincial dyarchy and established Provincial Autonomy, leading to 1937 elections."
+            },
+            {
+                id: 28,
+                tag: "National Movement",
+                question: "Why did Congress provincial ministries across India tender their resignations in October-November 1939?",
+                options: ["Partition proposal", "Unilateral inclusion of India in WWII", "Failure of Cripps Mission", "Communal riots"],
+                correct: 1,
+                explanation: "Viceroy Lord Linlithgow declared India at war with Germany in World War II without consulting the elected Indian provincial governments."
+            },
+            {
+                id: 29,
+                tag: "Quit India Movement",
+                question: "Mahatma Gandhi delivered his memorable 'Do or Die' slogan at Gowalia Tank Maidan during the launch of which movement in 1942?",
+                options: ["Non-Cooperation Movement", "Civil Disobedience Movement", "Quit India Movement", "Individual Satyagraha"],
+                correct: 2,
+                explanation: "Gandhi gave the call 'Do or Die' on 8 August 1942 at Gowalia Tank in Mumbai, initiating the Quit India Movement."
+            },
+            {
+                id: 30,
+                tag: "Indian National Army",
+                question: "Who was the initial military commander who originally formed the Indian National Army (INA) in Malaya in 1942?",
+                options: ["Captain Mohan Singh", "Subhas Chandra Bose", "Rash Behari Bose", "Shah Nawaz Khan"],
+                correct: 0,
+                explanation: "Captain Mohan Singh, an Indian soldier in the British Indian Army, formed the first INA in 1942 with Japanese military support."
+            },
+            {
+                id: 31,
+                tag: "Indian National Army",
+                question: "Subhas Chandra Bose proclaimed the establishment of the Provisional Government of Free India (Azad Hind) in 1943 at:",
+                options: ["Tokyo", "Singapore", "Rangoon", "Berlin"],
+                correct: 1,
+                explanation: "Netaji Subhas Chandra Bose proclaimed the Arzi Hukumat-e-Azad Hind (Provisional Government of Free India) in Singapore on 21 October 1943."
+            },
+            {
+                id: 32,
+                tag: "Partition & Freedom",
+                question: "The British Cabinet Mission arrived in India in 1946 to propose a constitutional framework. Who among the following was NOT a member?",
+                options: ["Lord Pethick-Lawrence", "Sir Stafford Cripps", "A. V. Alexander", "Lord Wavell"],
+                correct: 3,
+                explanation: "The Cabinet Mission comprised Pethick-Lawrence, Cripps, and A. V. Alexander. Lord Wavell was the Viceroy, not a member of the mission."
+            },
+            {
+                id: 33,
+                tag: "Partition & Freedom",
+                question: "The Muslim League observed 'Direct Action Day' on 16 August 1946, leading to widespread communal violence in which city?",
+                options: ["Calcutta", "Lahore", "Rawalpindi", "Noakhali"],
+                correct: 0,
+                explanation: "Direct Action Day on 16 August 1946 resulted in the 'Great Calcutta Killings' and subsequent communal riots in Bengal and Bihar."
+            },
+            {
+                id: 34,
+                tag: "Partition & Freedom",
+                question: "Who served as the last British Viceroy of India and oversaw the Partition and independence process in 1947?",
+                options: ["Lord Wavell", "Lord Linlithgow", "Lord Mountbatten", "Clement Attlee"],
+                correct: 2,
+                explanation: "Lord Mountbatten arrived in March 1947 as the last Viceroy, presenting the 3rd June Plan for the partition of India and Pakistan."
+            },
+            {
+                id: 35,
+                tag: "Partition & Freedom",
+                question: "The international boundary line dividing India and Pakistan was drawn under the chairmanship of:",
+                options: ["Sir Cyril Radcliffe", "Stafford Cripps", "Lord Ismay", "Mortimer Durand"],
+                correct: 0,
+                explanation: "Sir Cyril Radcliffe headed the Boundary Commissions appointed to demarcate the borders for Punjab and Bengal."
+            },
+            {
+                id: 36,
+                tag: "Press & Education",
+                question: "Which Viceroy repealed the restrictive Vernacular Press Act in 1882, earning popularity among Indians?",
+                options: ["Lord Lytton", "Lord Ripon", "Lord Dufferin", "Lord Lansdowne"],
+                correct: 1,
+                explanation: "Lord Ripon repealed Lord Lytton's repressive Vernacular Press Act of 1878 and introduced local self-government acts."
+            },
+            {
+                id: 37,
+                tag: "Socio-Religious Movements",
+                question: "The Ramakrishna Mission was established in 1897 by Swami Vivekananda at which headquarters near Kolkata?",
+                options: ["Belur Math", "Dakshineswar", "Mayavati", "Baranagar"],
+                correct: 0,
+                explanation: "Swami Vivekananda established the Ramakrishna Mission in 1897, setting up its headquarters at Belur Math, West Bengal."
+            },
+            {
+                id: 38,
+                tag: "National Movement Leaders",
+                question: "Who established the 'Servants of India Society' in Pune in 1905 to train Indians for social service?",
+                options: ["Gopal Krishna Gokhale", "Bal Gangadhar Tilak", "Mahadev Govind Ranade", "V. D. Savarkar"],
+                correct: 0,
+                explanation: "Gopal Krishna Gokhale founded the Servants of India Society in 1905. He was also regarded by Gandhi as his political mentor."
+            },
+            {
+                id: 39,
+                tag: "Economic Impact of British Rule",
+                question: "Who authored the book 'Poverty and Un-British Rule in India', introducing the 'Drain of Wealth' theory?",
+                options: ["R. C. Dutt", "Dadabhai Naoroji", "M. G. Ranade", "Dinshaw Wacha"],
+                correct: 1,
+                explanation: "Dadabhai Naoroji ('Grand Old Man of India') calculated India's national income and highlighted the systematic economic drain under British rule."
+            },
+            {
+                id: 40,
+                tag: "Indian National Congress",
+                question: "Who was the first woman to preside over an annual session of the Indian National Congress in 1917?",
+                options: ["Sarojini Naidu", "Annie Besant", "Nellie Sengupta", "Vijaya Lakshmi Pandit"],
+                correct: 1,
+                explanation: "Dr. Annie Besant presided over the 1917 Calcutta INC session. (Sarojini Naidu was the first Indian woman president in 1925)."
+            },
+            {
+                id: 41,
+                tag: "Peasant & Worker Movements",
+                question: "Sardar Vallabhbhai Patel earned the title 'Sardar' from local women after leading which successful anti-tax satyagraha in 1928?",
+                options: ["Kheda Satyagraha", "Bardoli Satyagraha", "Borsad Satyagraha", "Nagpur Flag Satyagraha"],
+                correct: 1,
+                explanation: "Patel led the Bardoli Satyagraha in Gujarat in 1928 against an unfair 22% land revenue hike, earning the title 'Sardar'."
+            },
+            {
+                id: 42,
+                tag: "Constitutional Reforms",
+                question: "The Cripps Mission visited India in March 1942 offering Dominion Status after WWII. Mahatma Gandhi termed its proposal as:",
+                options: ["A post-dated cheque on a crashing bank", "A charter of slavery", "An empty promise", "A leap in the dark"],
+                correct: 0,
+                explanation: "Gandhi described the Cripps offers of post-war Dominion Status as a 'post-dated cheque on a failing bank'."
+            },
+            {
+                id: 43,
+                tag: "Revolutionary Freedom Struggle",
+                question: "The Chittagong Armoury Raid of April 1930 in Bengal was planned and executed under the leadership of:",
+                options: ["Masterda Surya Sen", "Kalpana Datta", "Pritilata Waddedar", "Chandrashekhar Azad"],
+                correct: 0,
+                explanation: "Surya Sen ('Masterda') led the Indian Republican Army to capture the Chittagong armoury on 18 April 1930."
+            },
+            {
+                id: 44,
+                tag: "Revolutionary Freedom Struggle",
+                question: "Which secret revolutionary society was founded by Vinayak Damodar Savarkar and his brother in 1904?",
+                options: ["Anushilan Samiti", "Abhinav Bharat Society", "Ghadar Party", "Mitra Mela"],
+                correct: 1,
+                explanation: "Abhinav Bharat Society (Young India Society) was formed by V. D. Savarkar and Ganesh Savarkar in Nashik in 1904."
+            },
+            {
+                id: 45,
+                tag: "Press & Literature",
+                question: "The national song 'Vande Mataram' was originally composed in Sanskritized Bengali by Bankim Chandra Chattopadhyay in which novel?",
+                options: ["Anandamath", "Durgeshnondini", "Kapalkundala", "Gitanjali"],
+                correct: 0,
+                explanation: "'Vande Mataram' was published in Bankim Chandra's famous 1882 political novel 'Anandamath', set during the Sannyasi Rebellion."
+            },
+            {
+                id: 46,
+                tag: "National Movement",
+                question: "The Ghadar Party was established in 1913 in San Francisco (USA) to organize an armed rebellion in India by:",
+                options: ["Lala Hardayal & Sohan Singh Bhakna", "Shyamji Krishna Varma", "V. D. Savarkar", "Birendranath Chattopadhyaya"],
+                correct: 0,
+                explanation: "Lala Hardayal, Sohan Singh Bhakna, and Tarak Nath Das established the Ghadar Movement to end British rule in India."
+            },
+            {
+                id: 47,
+                tag: "National Movement",
+                question: "Who unfurled the early Indian National Flag at the International Socialist Conference in Stuttgart, Germany, in 1907?",
+                options: ["Madam Bhikaji Cama", "Sarojini Naidu", "Aruna Asaf Ali", "Annie Besant"],
+                correct: 0,
+                explanation: "Madam Bhikaji Cama hoisted the tricolor 'Flag of Indian Independence' in Stuttgart in 1907, attracting global attention."
+            },
+            {
+                id: 48,
+                tag: "Integration of States",
+                question: "Who served as the principal diplomat alongside Sardar Vallabhbhai Patel in integrating over 560 princely states into India?",
+                options: ["V. P. Menon", "C. Rajagopalachari", "B. N. Rau", "John Matthai"],
+                correct: 0,
+                explanation: "V. P. Menon, Secretary of the Ministry of the States, worked closely with Home Minister Sardar Patel to secure accession instruments."
+            },
+            {
+                id: 49,
+                tag: "Constitutional History",
+                question: "Who moved the historic 'Objectives Resolution' in the Constituent Assembly on 13 December 1946?",
+                options: ["Jawaharlal Nehru", "Dr. B. R. Ambedkar", "Dr. Rajendra Prasad", "Sardar Patel"],
+                correct: 0,
+                explanation: "Jawaharlal Nehru introduced the Objectives Resolution laying down the fundamental principles of sovereign socialist secular democratic India."
+            },
+            {
+                id: 50,
+                tag: "Maratha & British Supremacy",
+                question: "The Third Battle of Panipat in 1761 weakened Maratha power significantly. Who was the Afghan invader who defeated the Marathas?",
+                options: ["Ahmad Shah Abdali", "Nadir Shah", "Shah Shuja", "Zaman Shah"],
+                correct: 0,
+                explanation: "Ahmad Shah Durrani (Abdali) defeated the Maratha forces led by Sadashivrao Bhau on 14 January 1761 at Panipat."
+            }
+        ];
+
+        // State variables
+        let studentName = "";
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questionsData.length).fill(null); // stores option index
+        let reviewStatus = new Array(questionsData.length).fill(false); // stores true/false
+        let visitedStatus = new Array(questionsData.length).fill(false);
+        let warningCount = 0;
+        const maxWarnings = 3;
+        let timerInterval = null;
+        let totalTimeSeconds = 30 * 60; // 30 minutes
+        let timeSpentSeconds = 0;
+        let modalCallback = null;
+        let isExamSubmitted = false;
+
+        // Start Test Trigger
+        function startTest() {
+            const nameInput = document.getElementById("studentNameInput");
+            const agreeCheck = document.getElementById("agreeCheck");
+
+            studentName = nameInput.value.trim();
+
+            if (!studentName) {
+                showModal("Registration Required", "Please enter your full name to proceed with the examination.", false);
+                return;
+            }
+
+            if (!agreeCheck.checked) {
+                showModal("Terms Agreement", "Please check the agreement box confirming you will abide by exam rules.", false);
+                return;
+            }
+
+            // Update Header Name
+            document.getElementById("headerStudentName").textContent = studentName;
+            document.getElementById("scorecardStudentName").textContent = studentName;
+
+            // Request Fullscreen for Anti-Malpractice
+            requestFullScreenMode();
+
+            // Hide instruction, show exam
+            document.getElementById("instructionScreen").classList.add("hidden");
+            document.getElementById("examScreen").classList.remove("hidden");
+            document.getElementById("examScreen").classList.add("flex");
+            document.getElementById("userHeaderBadge").classList.remove("hidden");
+            document.getElementById("timerContainer").classList.remove("hidden");
+            document.getElementById("warningBadge").classList.remove("hidden");
+
+            // Initialize Exam State
+            visitedStatus[0] = true;
+            renderQuestion(0);
+            renderPalette();
+            startTimer();
+            setupAntiMalpracticeListeners();
+        }
+
+        // Fullscreen Helper
+        function requestFullScreenMode() {
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) {
+                docEl.requestFullscreen().catch(err => console.log(err));
+            } else if (docEl.mozRequestFullScreen) {
+                docEl.mozRequestFullScreen();
+            } else if (docEl.webkitRequestFullscreen) {
+                docEl.webkitRequestFullscreen();
+            } else if (docEl.msRequestFullscreen) {
+                docEl.msRequestFullscreen();
+            }
+        }
+
+        // Render Current Question
+        function renderQuestion(index) {
+            currentQuestionIndex = index;
+            visitedStatus[index] = true;
+
+            const q = questionsData[index];
+            document.getElementById("currentQNumBadge").textContent = `Q. ${index + 1}`;
+            document.getElementById("questionTag").textContent = q.tag;
+            document.getElementById("questionText").textContent = q.question;
+
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = "";
+
+            q.options.forEach((optText, optIdx) => {
+                const isSelected = userAnswers[index] === optIdx;
+                const optionBtn = document.createElement("button");
+                optionBtn.type = "button";
+                optionBtn.className = `w-full text-left p-3.5 sm:p-4 rounded-xl border transition flex items-center space-x-3 cursor-pointer ${
+                    isSelected 
+                        ? "bg-blue-50 border-blue-600 text-blue-900 shadow-sm font-semibold" 
+                        : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300"
+                }`;
+                
+                optionBtn.onclick = () => selectOption(optIdx);
+
+                const labelCircle = document.createElement("div");
+                labelCircle.className = `w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
+                    isSelected ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+                }`;
+                labelCircle.textContent = String.fromCharCode(65 + optIdx);
+
+                const optionSpan = document.createElement("span");
+                optionSpan.className = "text-xs sm:text-base leading-relaxed";
+                optionSpan.textContent = optText;
+
+                optionBtn.appendChild(labelCircle);
+                optionBtn.appendChild(optionSpan);
+                optionsContainer.appendChild(optionBtn);
+            });
+
+            renderPalette();
+        }
+
+        // Option selection
+        function selectOption(optIndex) {
+            userAnswers[currentQuestionIndex] = optIndex;
+            renderQuestion(currentQuestionIndex);
+        }
+
+        // Button Actions
+        function saveAndNext() {
+            if (currentQuestionIndex < questionsData.length - 1) {
+                renderQuestion(currentQuestionIndex + 1);
+            } else {
+                showModal("End of Test", "You are at the final question. You can review your answers or click 'Submit Examination'.", false);
+            }
+        }
+
+        function markForReviewAndNext() {
+            reviewStatus[currentQuestionIndex] = true;
+            saveAndNext();
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIndex] = null;
+            reviewStatus[currentQuestionIndex] = false;
+            renderQuestion(currentQuestionIndex);
+        }
+
+        // Question Palette Rendering
+        function renderPalette() {
+            const grid = document.getElementById("paletteGrid");
+            grid.innerHTML = "";
+
+            questionsData.forEach((_, idx) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.onclick = () => {
+                    renderQuestion(idx);
+                    // On mobile auto-close palette on select
+                    if (window.innerWidth < 1024) {
+                        document.getElementById("sidebarPanel").classList.add("hidden");
+                    }
+                };
+
+                const isCurrent = idx === currentQuestionIndex;
+                const isAns = userAnswers[idx] !== null;
+                const isRev = reviewStatus[idx];
+                const isVis = visitedStatus[idx];
+
+                let bgClass = "bg-slate-100 text-slate-700 border-slate-300"; // Not Visited
+                if (isAns) {
+                    bgClass = "bg-emerald-500 text-white border-emerald-600 font-bold";
+                } else if (isRev) {
+                    bgClass = "bg-purple-600 text-white border-purple-700 font-bold";
+                } else if (isVis) {
+                    bgClass = "bg-rose-500 text-white border-rose-600 font-bold";
+                }
+
+                btn.className = `w-9 h-9 sm:w-10 sm:h-10 rounded-xl font-medium text-xs sm:text-sm flex items-center justify-center border transition cursor-pointer ${bgClass} ${
+                    isCurrent ? "ring-2 ring-blue-600 ring-offset-2" : ""
+                }`;
+                btn.textContent = idx + 1;
+                grid.appendChild(btn);
+            });
+        }
+
+        // Mobile Palette Drawer Toggle
+        function toggleMobilePalette() {
+            const sidebar = document.getElementById("sidebarPanel");
+            if (sidebar.classList.contains("hidden")) {
+                sidebar.classList.remove("hidden");
+                sidebar.classList.add("flex");
+            } else {
+                sidebar.classList.add("hidden");
+                sidebar.classList.remove("flex");
+            }
+        }
+
+        // Timer Logic
+        function startTimer() {
+            const display = document.getElementById("timerDisplay");
+            timerInterval = setInterval(() => {
+                if (totalTimeSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    showModal("Time Expired", "The 30-minute exam duration has ended. Your test will now be automatically submitted.", false, () => {
+                        processExamSubmission();
+                    });
+                    setTimeout(() => processExamSubmission(), 3000);
+                    return;
+                }
+                totalTimeSeconds--;
+                timeSpentSeconds++;
+
+                const mins = Math.floor(totalTimeSeconds / 60);
+                const secs = totalTimeSeconds % 60;
+                display.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                if (totalTimeSeconds <= 300) { // last 5 mins
+                    display.classList.remove("text-amber-400");
+                    display.classList.add("text-rose-500", "animate-pulse");
+                }
+            }, 1000);
+        }
+
+        // Security / Malpractice Listeners
+        function setupAntiMalpracticeListeners() {
+            // Tab Switch / Blur detection
+            window.addEventListener("blur", () => {
+                if (!isExamSubmitted) triggerMalpracticeWarning("Window or Tab focus lost!");
+            });
+
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden && !isExamSubmitted) {
+                    triggerMalpracticeWarning("Tab switching detected!");
+                }
+            });
+
+            // Prevent shortcut keys
+            document.addEventListener("keydown", (e) => {
+                if (
+                    e.key === "F12" ||
+                    (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+                    (e.ctrlKey && e.key === "u")
+                ) {
+                    e.preventDefault();
+                    triggerMalpracticeWarning("Developer tools / source code inspection restricted.");
+                }
+            });
+        }
+
+        function triggerMalpracticeWarning(reason) {
+            warningCount++;
+            document.getElementById("warningCountDisplay").textContent = warningCount;
+
+            if (warningCount >= maxWarnings) {
+                showModal("Exam Terminated", `Critical Malpractice Alert: ${reason}. You exceeded maximum warnings (3/3). Test submitted automatically.`, false, () => {
+                    processExamSubmission();
+                });
+                setTimeout(() => processExamSubmission(), 2500);
+            } else {
+                showModal(`Malpractice Warning (${warningCount}/3)`, `${reason} Please keep focus on the exam window. Reaching 3 warnings will result in auto-submission.`, false);
+            }
+        }
+
+        // Confirmation Modal for Submit
+        function confirmSubmitTest() {
+            let answeredCount = userAnswers.filter(a => a !== null).length;
+            let unattemptedCount = questionsData.length - answeredCount;
+
+            showModal(
+                "Confirm Exam Submission", 
+                `Are you sure you want to submit your test?\n\n- Answered: ${answeredCount}\n- Unattempted: ${unattemptedCount}`, 
+                true, 
+                (confirmed) => {
+                    if (confirmed) {
+                        processExamSubmission();
+                    }
+                }
+            );
+        }
+
+        // Process Submission & Calculate Results
+        function processExamSubmission() {
+            if (isExamSubmitted) return;
+            isExamSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Hide Exam Interface, Show Scorecard Screen
+            document.getElementById("examScreen").classList.add("hidden");
+            document.getElementById("scorecardScreen").classList.remove("hidden");
+
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+
+            userAnswers.forEach((ans, idx) => {
+                if (ans === null) {
+                    unattemptedCount++;
+                } else if (ans === questionsData[idx].correct) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+            });
+
+            const positiveScore = correctCount * 1.0;
+            const negativeDeduction = incorrectCount * 0.33;
+            const finalScore = Math.max(0, positiveScore - negativeDeduction).toFixed(2);
+            const attemptedCount = correctCount + incorrectCount;
+            const accuracy = attemptedCount > 0 ? Math.round((correctCount / attemptedCount) * 100) : 0;
+
+            const minsTaken = Math.floor(timeSpentSeconds / 60);
+            const secsTaken = timeSpentSeconds % 60;
+            const timeTakenStr = `${minsTaken}m ${secsTaken}s`;
+
+            // Populate Scorecard Summary
+            document.getElementById("resFinalScore").innerHTML = `${finalScore} <span class="text-xs font-normal text-slate-400">/ 50</span>`;
+            document.getElementById("resAccuracy").textContent = `${accuracy}%`;
+            document.getElementById("resCorrect").textContent = correctCount;
+            document.getElementById("resIncorrect").textContent = incorrectCount;
+            document.getElementById("resTimeTaken").textContent = timeTakenStr;
+            document.getElementById("resAttempted").textContent = `${attemptedCount} / 50`;
+            document.getElementById("resUnattempted").textContent = unattemptedCount;
+            document.getElementById("resNegMarks").textContent = `-${negativeDeduction.toFixed(2)}`;
+
+            // Build Solution Explanations List
+            renderSolutionList();
+        }
+
+        function renderSolutionList() {
+            const container = document.getElementById("solutionListContainer");
+            container.innerHTML = "";
+
+            questionsData.forEach((q, idx) => {
+                const userChoice = userAnswers[idx];
+                const isCorrect = userChoice === q.correct;
+                const isUnattempted = userChoice === null;
+
+                let badgeHTML = "";
+                let cardBorder = "border-slate-200";
+
+                if (isUnattempted) {
+                    badgeHTML = `<span class="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-lg">Unattempted</span>`;
+                } else if (isCorrect) {
+                    badgeHTML = `<span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-lg"><i class="fa-solid fa-check mr-1"></i> Correct (+1.0)</span>`;
+                    cardBorder = "border-emerald-200 bg-emerald-50/20";
+                } else {
+                    badgeHTML = `<span class="bg-rose-100 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-lg"><i class="fa-solid fa-xmark mr-1"></i> Incorrect (-0.33)</span>`;
+                    cardBorder = "border-rose-200 bg-rose-50/20";
+                }
+
+                const card = document.createElement("div");
+                card.className = `p-4 sm:p-6 rounded-2xl border ${cardBorder} space-y-3`;
+
+                let optionsListHTML = q.options.map((opt, oIdx) => {
+                    let optStyle = "text-slate-700 border-slate-200 bg-white";
+                    let optIcon = "";
+
+                    if (oIdx === q.correct) {
+                        optStyle = "text-emerald-900 border-emerald-300 bg-emerald-100/70 font-semibold";
+                        optIcon = `<i class="fa-solid fa-check-circle text-emerald-600 ml-auto"></i>`;
+                    }
+                    if (userChoice === oIdx && !isCorrect) {
+                        optStyle = "text-rose-900 border-rose-300 bg-rose-100/70 font-semibold";
+                        optIcon = `<i class="fa-solid fa-times-circle text-rose-600 ml-auto"></i>`;
+                    }
+
+                    return `
+                        <div class="p-2.5 sm:p-3 rounded-xl border text-xs sm:text-sm flex items-center ${optStyle}">
+                            <span class="font-bold mr-2 text-xs">${String.fromCharCode(65 + oIdx)}.</span>
+                            <span>${opt}</span>
+                            ${optIcon}
+                        </div>
+                    `;
+                }).join("");
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Question ${idx + 1} • ${q.tag}</span>
+                        ${badgeHTML}
+                    </div>
+                    <h4 class="text-xs sm:text-base font-bold text-slate-900 leading-relaxed">${q.question}</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                        ${optionsListHTML}
+                    </div>
+                    <div class="mt-3 p-3 bg-slate-100/80 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-700">
+                        <strong class="text-blue-800 font-bold block mb-1 flex items-center">
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i> Explanation:
+                        </strong>
+                        <p class="leading-relaxed text-slate-600">${q.explanation}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // PDF Generation for Answer Key
+        function downloadAnswerKeyPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            let attemptedCount = userAnswers.filter(a => a !== null).length;
+            let correctCount = userAnswers.filter((a, idx) => a === questionsData[idx].correct).length;
+            let incorrectCount = attemptedCount - correctCount;
+            let score = Math.max(0, (correctCount * 1.0) - (incorrectCount * 0.33)).toFixed(2);
+
+            // Document Header
+            doc.setFillColor(15, 23, 42); // slate-900
+            doc.rect(0, 0, 210, 30, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Modern History of India - Answer Key & Solutions', 14, 15);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Candidate: ${studentName || "Candidate"} | Score: ${score}/50 | Correct: ${correctCount} | Wrong: ${incorrectCount}`, 14, 23);
+
+            // Prepare Table Rows
+            const tableRows = questionsData.map((q, idx) => {
+                const userChoice = userAnswers[idx];
+                const isCorrect = userChoice === q.correct;
+                const isUnattempted = userChoice === null;
+
+                let status = isUnattempted ? "Unattempted" : (isCorrect ? "Correct (+1.0)" : "Incorrect (-0.33)");
+                let userOptText = isUnattempted ? "N/A" : `${String.fromCharCode(65 + userChoice)}. ${q.options[userChoice]}`;
+                let correctOptText = `${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}`;
+
+                return [
+                    `${idx + 1}`,
+                    q.question,
+                    userOptText,
+                    correctOptText,
+                    status,
+                    q.explanation
+                ];
+            });
+
+            doc.autoTable({
+                startY: 35,
+                head: [['Q#', 'Question', 'Your Choice', 'Correct Answer', 'Status', 'Explanation']],
+                body: tableRows,
+                theme: 'striped',
+                headStyles: { fillStyle: [37, 99, 235], textColor: [255, 255, 255], fontStyle: 'bold' },
+                styles: { fontSize: 8, cellPadding: 2.5, overflow: 'linebreak' },
+                columnStyles: {
+                    0: { cellWidth: 10 },
+                    1: { cellWidth: 45 },
+                    2: { cellWidth: 30 },
+                    3: { cellWidth: 30 },
+                    4: { cellWidth: 25 },
+                    5: { cellWidth: 45 }
+                }
+            });
+
+            doc.save(`${(studentName || "Candidate").replace(/\s+/g, '_')}_Modern_History_AnswerKey.pdf`);
+        }
+
+        // Custom Modal Utilities
+        function showModal(title, message, isConfirm = false, callback = null) {
+            document.getElementById("modalTitle").textContent = title;
+            document.getElementById("modalMessage").textContent = message;
+            modalCallback = callback;
+
+            const cancelBtn = document.getElementById("modalCancelBtn");
+            if (isConfirm) {
+                cancelBtn.classList.remove("hidden");
+            } else {
+                cancelBtn.classList.add("hidden");
+            }
+
+            document.getElementById("customModal").classList.remove("hidden");
+        }
+
+        function closeModal(result) {
+            document.getElementById("customModal").classList.add("hidden");
+            if (modalCallback) {
+                modalCallback(result);
+                modalCallback = null;
+            }
+        }
+    </script>
+</body>
+</html>
