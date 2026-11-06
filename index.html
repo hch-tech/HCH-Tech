@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f6f1">
+    <meta name="description" content="Prepare for competitive exams with realistic CBT mock tests, focused practice, and clear performance insights.">
+    <title>HCH Tech | Practice for the exam ahead</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+            --paper: #f7f6f1;
+            --ink: #1d2925;
+            --muted: #65716b;
+            --line: #dedfd6;
+            --green: #1c6b4d;
+            --green-dark: #154e39;
+            --green-soft: #e4eee7;
+            --orange: #e96d43;
+            --white: #fffefa;
+            --serif: Georgia, 'Times New Roman', serif;
+            --sans: 'DM Sans', sans-serif;
+            --display: 'Manrope', sans-serif;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+        a { color: inherit; text-decoration: none; }
+        button, select { font: inherit; }
+        button, a, select { -webkit-tap-highlight-color: transparent; }
+        .wrap { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
+        .topline { height: 5px; background: var(--green); }
+        .site-header { position: sticky; top: 0; z-index: 20; background: rgba(247, 246, 241, .95); border-bottom: 1px solid var(--line); backdrop-filter: blur(14px); }
+        .nav-row { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+        .brand { display: inline-flex; align-items: center; gap: 11px; font: 800 17px var(--display); white-space: nowrap; }
+        .brand-mark { width: 35px; height: 35px; display: grid; place-items: center; border-radius: 9px; color: white; background: var(--green); }
+        .brand-mark svg { width: 19px; height: 19px; }
+        .brand span:last-child em { color: var(--green); font-style: normal; }
+        .nav-links { display: flex; align-items: center; gap: 34px; color: #48534d; font-size: 13px; font-weight: 600; }
+        .mobile-nav { display: none; }
+        .nav-links a:hover, .footer-links a:hover { color: var(--green); }
+        .nav-action { display: inline-flex; align-items: center; gap: 9px; padding: 11px 16px; border: 1px solid var(--green); border-radius: 5px; color: var(--green); font-size: 13px; font-weight: 700; transition: background .2s, color .2s; }
+        .nav-action:hover { color: white; background: var(--green); }
+        .nav-action svg { width: 15px; height: 15px; }
+        .menu-toggle { display: none; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 5px; color: var(--ink); background: transparent; cursor: pointer; }
+        .menu-toggle svg { width: 20px; height: 20px; }
+        .hero { position: relative; overflow: hidden; padding: 74px 0 78px; border-bottom: 1px solid var(--line); background-color: var(--paper); background-image: radial-gradient(#cfd5cb 0.7px, transparent 0.7px); background-size: 17px 17px; }
+        .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--paper) 0%, rgba(247,246,241,.98) 50%, rgba(247,246,241,.55) 100%); pointer-events: none; }
+        .hero-grid { position: relative; display: grid; grid-template-columns: 1.03fr .97fr; align-items: center; gap: 65px; }
+        .hero-copy { animation: rise-in .7s both; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 22px; color: var(--green); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+        .eyebrow::before { content: ''; width: 25px; height: 2px; background: var(--orange); }
+        h1, h2, h3, p { margin-top: 0; }
+        h1 { max-width: 580px; margin-bottom: 20px; font: 500 clamp(44px, 5vw, 66px)/1.07 var(--serif); }
+        h1 span { color: var(--green); font-style: italic; }
+        .hero-lede { max-width: 510px; margin-bottom: 29px; color: var(--muted); font-size: 16px; line-height: 1.75; }
+        .hero-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+        .button-primary { min-height: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 0 19px; border: 1px solid var(--green); border-radius: 4px; color: white; background: var(--green); font-size: 13px; font-weight: 700; transition: background .2s, transform .2s; }
+        .button-primary:hover { transform: translateY(-2px); background: var(--green-dark); }
+        .button-primary svg { width: 16px; height: 16px; }
+        .text-link { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-size: 13px; font-weight: 700; }
+        .text-link svg { width: 15px; height: 15px; color: var(--green); }
+        .trust-line { display: flex; align-items: center; gap: 11px; margin-top: 32px; color: var(--muted); font-size: 12px; }
+        .trust-dots { display: flex; padding-left: 4px; }
+        .trust-dots span { width: 25px; height: 25px; display: grid; place-items: center; margin-left: -4px; border: 2px solid var(--paper); border-radius: 50%; color: white; background: #476d5c; font-size: 9px; font-weight: 700; }
+        .trust-dots span:nth-child(2) { background: #d98661; }
+        .trust-dots span:nth-child(3) { background: #667b9a; }
+        .trust-dots span:nth-child(4) { background: #8a795f; }
+        .practice-scene { position: relative; min-height: 390px; display: flex; align-items: center; justify-content: center; animation: rise-in .8s .12s both; }
+        .scene-photo { position: absolute; inset: 0 0 18px 48px; overflow: hidden; border-radius: 3px; background: #627568; }
+        .scene-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: saturate(.72); }
+        .scene-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,46,34,.04), rgba(20,46,34,.4)); }
+        .exam-preview { position: relative; z-index: 1; width: min(340px, 88%); margin: 36px 0 0 -18px; border: 1px solid rgba(29,41,37,.14); background: var(--white); box-shadow: 0 20px 55px rgba(29,41,37,.2); }
+        .preview-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 17px; border-bottom: 1px solid #e8e8e1; font-size: 10px; font-weight: 700; }
+        .preview-badge { display: inline-flex; align-items: center; gap: 6px; color: var(--green); }
+        .preview-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #58a576; }
+        .timer { color: #b94d32; font-variant-numeric: tabular-nums; }
+        .preview-body { padding: 19px 18px 16px; }
+        .question-meta { display: flex; justify-content: space-between; margin-bottom: 15px; color: #768078; font-size: 10px; }
+        .question-meta strong { color: var(--green); }
+        .preview-question { margin-bottom: 15px; font: 600 14px/1.5 var(--display); }
+        .option { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 9px 10px; border: 1px solid #e6e8df; color: #4a544d; font-size: 11px; }
+        .option span { width: 17px; height: 17px; display: grid; place-items: center; border: 1px solid #b9c1b8; border-radius: 50%; color: #788078; font-size: 9px; }
+        .option.selected { border-color: #659179; color: var(--green-dark); background: #edf4ee; }
+        .option.selected span { border-color: var(--green); color: white; background: var(--green); }
+        .preview-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 17px; padding-top: 13px; border-top: 1px solid #e8e8e1; }
+        .preview-bottom small { color: #7b847d; font-size: 9px; }
+        .preview-next { padding: 8px 11px; border: 0; border-radius: 3px; color: white; background: var(--green); font-size: 10px; font-weight: 700; }
+        .photo-caption { position: absolute; top: 0; right: 0; z-index: 2; padding: 9px 12px; color: white; background: var(--green-dark); font-size: 10px; font-weight: 600; }
+        .quick-stats { border-bottom: 1px solid var(--line); background: #eeefe8; }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); }
+        .stat { display: flex; align-items: center; justify-content: center; gap: 13px; min-height: 84px; border-right: 1px solid #d9dbd2; }
+        .stat:last-child { border-right: 0; }
+        .stat-mark { width: 31px; height: 31px; display: grid; place-items: center; border: 1px solid #c9d4c9; border-radius: 50%; color: var(--green); }
+        .stat-mark svg { width: 16px; height: 16px; }
+        .stat strong { display: block; font: 700 14px var(--display); }
+        .stat span:last-child { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+        .section { padding: 83px 0; }
+        .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 30px; }
+        .section-heading .eyebrow { margin-bottom: 12px; }
+        h2 { margin-bottom: 0; font: 500 clamp(32px, 4vw, 43px)/1.15 var(--serif); }
+        .section-intro { max-width: 390px; margin-bottom: 3px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+        .exam-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+        .exam-item { min-height: 211px; display: flex; flex-direction: column; padding: 22px 20px 18px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(255,254,250,.56); transition: background .2s; }
+        .exam-item:hover { background: var(--white); }
+        .exam-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .exam-icon { width: 35px; height: 35px; display: grid; place-items: center; border: 1px solid #d6dfd5; border-radius: 3px; color: var(--green); background: var(--green-soft); }
+        .exam-icon svg { width: 18px; height: 18px; }
+        .exam-count { color: #79827b; font-size: 10px; }
+        .exam-item h3 { margin-bottom: 6px; font: 700 15px var(--display); }
+        .exam-item p { margin-bottom: 20px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+        .exam-link { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; color: var(--green); font-size: 11px; font-weight: 700; }
+        .exam-link svg { width: 13px; height: 13px; transition: transform .2s; }
+        .exam-link:hover svg { transform: translateX(3px); }
+        .practice-band { padding: 58px 0; color: white; background: var(--green-dark); }
+        .practice-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 50px; }
+        .practice-band .eyebrow { color: #b9d1c1; }
+        .practice-band h2 { max-width: 460px; margin-bottom: 16px; }
+        .practice-band p { max-width: 465px; margin-bottom: 0; color: #d1ded5; font-size: 13px; line-height: 1.8; }
+        .selector-panel { padding: 21px; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.07); }
+        .selector-panel label { display: block; margin-bottom: 9px; color: #d1ded5; font-size: 11px; font-weight: 600; }
+        .select-row { display: flex; gap: 10px; }
+        .select-row select { width: 100%; min-width: 0; height: 46px; padding: 0 12px; border: 1px solid rgba(255,255,255,.28); border-radius: 3px; color: var(--ink); background: var(--white); font-size: 12px; }
+        .select-row button { min-width: 130px; height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 13px; border: 0; border-radius: 3px; color: var(--ink); background: #e6ad58; font-size: 11px; font-weight: 700; cursor: pointer; transition: background .2s; }
+        .select-row button:hover { background: #f0bf70; }
+        .select-row button svg { width: 15px; height: 15px; }
+        .selector-note { min-height: 16px; margin: 10px 0 0; color: #d1ded5; font-size: 10px; }
+        .features { padding-bottom: 89px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; margin-top: 31px; }
+        .feature { padding-top: 18px; border-top: 2px solid var(--green); }
+        .feature-number { margin-bottom: 18px; color: var(--orange); font: italic 15px var(--serif); }
+        .feature h3 { margin-bottom: 8px; font: 700 15px var(--display); }
+        .feature p { max-width: 300px; margin-bottom: 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
+        footer { padding: 25px 0; border-top: 1px solid var(--line); }
+        .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .footer-brand { display: inline-flex; align-items: center; gap: 9px; font: 800 13px var(--display); }
+        .footer-brand .brand-mark { width: 27px; height: 27px; border-radius: 6px; }
+        .footer-brand .brand-mark svg { width: 15px; height: 15px; }
+        .copyright { margin: 0; color: #788078; font-size: 10px; }
+        .footer-links { display: flex; gap: 21px; color: #65716b; font-size: 10px; font-weight: 600; }
+        :focus-visible { outline: 3px solid #df9352; outline-offset: 3px; }
+        @keyframes rise-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+        @media (max-width: 900px) {
+            .hero { padding: 55px 0 62px; }
+            .hero-grid { gap: 32px; }
+            .practice-scene { min-height: 345px; }
+            .photo-caption { display: none; }
+            .exam-grid { grid-template-columns: repeat(2, 1fr); }
+            .exam-item { min-height: 195px; }
+        }
+        @media (max-width: 680px) {
+            .wrap { width: min(100% - 36px, 520px); }
+            .nav-row { min-height: 66px; }
+            .nav-links, .nav-action { display: none; }
+            .menu-toggle { display: grid; place-items: center; }
+            .mobile-nav { display: none; padding: 5px 18px 16px; border-top: 1px solid var(--line); background: var(--paper); }
+            .mobile-nav.open { display: grid; }
+            .mobile-nav a { padding: 12px 0; border-bottom: 1px solid var(--line); color: #48534d; font-size: 13px; font-weight: 600; }
+            .mobile-nav a:last-child { border-bottom: 0; color: var(--green); }
+            .hero { padding: 49px 0 42px; }
+            .hero::before { background: linear-gradient(180deg, var(--paper) 0%, rgba(247,246,241,.95) 45%, rgba(247,246,241,.6) 100%); }
+            .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+            .hero-copy { max-width: 540px; }
+            h1 { font-size: clamp(43px, 12vw, 59px); }
+            .hero-lede { font-size: 14px; }
+            .practice-scene { min-height: 330px; }
+            .scene-photo { inset: 0 0 16px 38px; }
+            .exam-preview { margin-left: -10px; }
+            .stats-row { grid-template-columns: 1fr; }
+            .stat { justify-content: flex-start; min-height: 67px; padding-left: 12px; border-right: 0; border-bottom: 1px solid #d9dbd2; }
+            .stat:last-child { border-bottom: 0; }
+            .section { padding: 61px 0; }
+            .section-heading { align-items: flex-start; flex-direction: column; gap: 13px; margin-bottom: 23px; }
+            .section-intro { max-width: 450px; }
+            .exam-grid { grid-template-columns: 1fr 1fr; }
+            .exam-item { min-height: 195px; padding: 16px 13px; }
+            .exam-top { margin-bottom: 17px; }
+            .exam-item h3 { font-size: 13px; }
+            .exam-item p { font-size: 10px; }
+            .practice-band { padding: 47px 0; }
+            .practice-grid { grid-template-columns: 1fr; gap: 26px; }
+            .select-row { flex-direction: column; }
+            .select-row button { width: 100%; }
+            .feature-grid { grid-template-columns: 1fr; gap: 22px; }
+            .feature p { max-width: 450px; }
+            .footer-row { align-items: flex-start; flex-direction: column; }
+        }
+        @media (max-width: 370px) {
+            .wrap { width: calc(100% - 28px); }
+            .exam-count { font-size: 9px; }
+            .exam-item { padding-inline: 10px; }
+            .hero-actions { align-items: flex-start; flex-direction: column; gap: 16px; }
+            .button-primary { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topline" aria-hidden="true"></div>
+    <header class="site-header">
+        <div class="wrap nav-row">
+            <a class="brand" href="#home" aria-label="HCH Tech home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19V5h3v5h8V5h3v14h-3v-6H8v6z"/></svg></span><span>HCH<em>Tech</em></span></a>
+            <nav class="nav-links" aria-label="Main navigation"><a href="#home">Home</a><a href="#exams">Exams</a><a href="#practice">How it works</a><a href="#features">Why HCH</a></nav>
+            <a class="nav-action" href="#practice">Find your mock test <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+            <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        </div>
+        <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="#home">Home</a><a href="#exams">Exams</a><a href="#practice">How it works</a><a href="#features">Why HCH</a></nav>
+    </header>
+    <main>
+        <section class="hero" id="home">
+            <div class="wrap hero-grid">
+                <div class="hero-copy">
+                    <p class="eyebrow">Your next attempt starts here</p>
+                    <h1>Practice today.<br>Walk in <span>prepared.</span></h1>
+                    <p class="hero-lede">Get exam-ready with realistic computer-based mock tests, focused practice, and clear insights into what to work on next.</p>
+                    <div class="hero-actions"><a class="button-primary" href="#exams">Explore mock tests <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a><a class="text-link" href="#practice">See how it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></div>
+                    <div class="trust-line"><div class="trust-dots" aria-hidden="true"><span>A</span><span>R</span><span>S</span><span>M</span></div><span>Build a steady practice habit, one test at a time.</span></div>
+                </div>
+                <div class="practice-scene" aria-label="Preview of a computer-based mock test">
+                    <div class="scene-photo"><img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&amp;fit=crop&amp;w=1100&amp;q=85" alt="Student working through notes at a desk" fetchpriority="high"></div>
+                    <div class="exam-preview">
+                        <div class="preview-top"><span class="preview-badge">Mock test in progress</span><span class="timer">00:42:18</span></div>
+                        <div class="preview-body">
+                            <div class="question-meta"><span>Quantitative aptitude</span><strong>Question 12 of 50</strong></div>
+                            <p class="preview-question">A train travels 360 km in 4 hours. What is its average speed?</p>
+                            <div class="option"><span>A</span> 80 km/h</div><div class="option selected"><span>B</span> 90 km/h</div><div class="option"><span>C</span> 100 km/h</div><div class="option"><span>D</span> 120 km/h</div>
+                            <div class="preview-bottom"><small>Marked: 1 &nbsp; Unanswered: 3</small><span class="preview-next">Next question &rarr;</span></div>
+                        </div>
+                    </div>
+                    <span class="photo-caption">A practice space built around you</span>
+                </div>
+            </div>
+        </section>
+        <section class="quick-stats" aria-label="Practice features">
+            <div class="wrap stats-row">
+                <div class="stat"><span class="stat-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h8M8 12h5M8 16h8"/></svg></span><div><strong>Real exam format</strong><span>Timed CBT-style practice</span></div></div>
+                <div class="stat"><span class="stat-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/></svg></span><div><strong>Useful performance review</strong><span>Spot strengths and gaps</span></div></div>
+                <div class="stat"><span class="stat-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18m9-9H3"/><circle cx="12" cy="12" r="9"/></svg></span><div><strong>Practice at your pace</strong><span>Full-length and sectional tests</span></div></div>
+            </div>
+        </section>
+        <section class="section" id="exams">
+            <div class="wrap">
+                <div class="section-heading"><div><p class="eyebrow">Choose your path</p><h2>One goal. A focused plan.</h2></div><p class="section-intro">Find practice for the exams you’re preparing for. Start with a mock, review your answers, and keep building from there.</p></div>
+                <div class="exam-grid">
+                    <article class="exam-item" data-exam="ssc"><div class="exam-top"><span class="exam-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h16M6 17l3-5 3 3 5-9 2 4"/></svg></span><span class="exam-count">Live Test</span></div><h3>Percentage</h3><p>For SSC RRB and Banking exams.</p><a class="exam-link" href="percentage-level-1.html" data-select="ssc">Take the Live test<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></article>
+                    <article class="exam-item" data-exam="ssc"><div class="exam-top"><span class="exam-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h16M6 17l3-5 3 3 5-9 2 4"/></svg></span><span class="exam-count">SSC</span></div><h3>SSC Exams</h3><p>CGL, CHSL, MTS and other staff selection exams.</p><a class="exam-link" href="#practice" data-select="ssc">Explore SSC practice <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></article>
+                    <article class="exam-item" data-exam="banking"><div class="exam-top"><span class="exam-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9h18L12 4 3 9Zm2 2v7m4-7v7m6-7v7m4-7v7M3 21h18"/></svg></span><span class="exam-count">BANKING</span></div><h3>Banking Exams</h3><p>IBPS PO, SBI PO, clerk and other bank exams.</p><a class="exam-link" href="#practice" data-select="banking">Explore banking practice <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></article>
+                    <article class="exam-item" data-exam="railways"><div class="exam-top"><span class="exam-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="14" rx="4"/><path d="M8 20h8m-7-3-2 3m9-3 2 3M8 8h8m-7 5h.01M15 13h.01"/></svg></span><span class="exam-count">RAILWAYS</span></div><h3>Railway Exams</h3><p>RRB NTPC, Group D, ALP and related recruitment tests.</p><a class="exam-link" href="#practice" data-select="railways">Explore railway practice <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></article>
+                    <article class="exam-item" data-exam="civil"><div class="exam-top"><span class="exam-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 3 8 4v5c0 4.5-3.1 7.5-8 9-4.9-1.5-8-4.5-8-9V7l8-4Z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="exam-count">CIVIL SERVICES</span></div><h3>Civil Services</h3><p>Build your foundation with UPSC and state exam practice.</p><a class="exam-link" href="#practice" data-select="civil">Explore civil services <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></article>
+                </div>
+            </div>
+        </section>
+        <section class="practice-band" id="practice">
+            <div class="wrap practice-grid">
+                <div><p class="eyebrow">Start with the right test</p><h2>Make your next practice session count.</h2><p>Choose an exam to find the mock tests and topic practice that fit your preparation. Your results help you decide what to focus on next.</p></div>
+                <form class="selector-panel" id="exam-form"><label for="exam-select">Which exam are you preparing for?</label><div class="select-row"><select id="exam-select" name="exam" required><option value="" selected disabled>Select an exam</option><option value="ssc">SSC Exams</option><option value="banking">Banking Exams</option><option value="railways">Railway Exams</option><option value="civil">Civil Services</option></select><button type="submit">Find practice <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button></div><p class="selector-note" id="selector-note" aria-live="polite">Select an exam to see the matching practice area.</p></form>
+            </div>
+        </section>
+        <section class="section features" id="features">
+            <div class="wrap">
+                <div class="section-heading"><div><p class="eyebrow">A better way to prepare</p><h2>Practice with purpose.</h2></div><p class="section-intro">Good preparation is more than taking tests. It’s knowing where you stand and using that insight well.</p></div>
+                <div class="feature-grid"><article class="feature"><div class="feature-number">01 / Familiarise</div><h3>Get comfortable with CBT</h3><p>Practice with a computer-based layout, question navigation, section structure, and a visible timer.</p></article><article class="feature"><div class="feature-number">02 / Understand</div><h3>Learn from every attempt</h3><p>Review your responses and use your score breakdown to identify topics that deserve another look.</p></article><article class="feature"><div class="feature-number">03 / Improve</div><h3>Keep your preparation focused</h3><p>Mix full mock tests with shorter topic sessions to make steady progress without losing direction.</p></article></div>
+            </div>
+        </section>
+    </main>
+    <footer><div class="wrap footer-row"><a class="footer-brand" href="#home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19V5h3v5h8V5h3v14h-3v-6H8v6z"/></svg></span>HCH Tech</a><p class="copyright">&copy; 2026 HCH Tech. Prepare one day at a time.</p><nav class="footer-links" aria-label="Footer navigation"><a href="#exams">Exams</a><a href="#practice">Practice</a><a href="#features">About</a></nav></div></footer>
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            menuToggle.setAttribute('aria-expanded', String(!isExpanded));
+            menuToggle.setAttribute('aria-label', isExpanded ? 'Open navigation' : 'Close navigation');
+            mobileNav.classList.toggle('open', !isExpanded);
+        });
+        mobileNav.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => {
+                mobileNav.classList.remove('open');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                menuToggle.setAttribute('aria-label', 'Open navigation');
+            });
+        });
+        const examSelect = document.getElementById('exam-select');
+        const selectorNote = document.getElementById('selector-note');
+        document.querySelectorAll('[data-select]').forEach((link) => {
+            link.addEventListener('click', () => {
+                examSelect.value = link.dataset.select;
+                selectorNote.textContent = `Selected ${examSelect.options[examSelect.selectedIndex].text}. Choose Find practice to continue.`;
+            });
+        });
+        document.getElementById('exam-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!examSelect.value) {
+                selectorNote.textContent = 'Please choose an exam first.';
+                examSelect.focus();
+                return;
+            }
+            const examCard = document.querySelector(`[data-exam="${examSelect.value}"]`);
+            selectorNote.textContent = `${examSelect.options[examSelect.selectedIndex].text} selected. Explore the available practice above to get started.`;
+            examCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            examCard.setAttribute('tabindex', '-1');
+            examCard.focus({ preventScroll: true });
+        });
+    </script>
+</body>
+</html>

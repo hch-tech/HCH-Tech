@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC & RRB Percentage Mock Test (CBT)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- jsPDF & AutoTable for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        status: {
+                            notvisited: '#e5e7eb',
+                            notanswered: '#ef4444',
+                            answered: '#22c55e',
+                            marked: '#8b5cf6',
+                            ansmarked: '#6366f1'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Prevent text selection to curb cheating */
+        .unselectable {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800 unselectable min-h-screen flex flex-col">
+
+    <!-- ==================== REGISTRATION MODAL ==================== -->
+    <div id="registrationModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 overflow-hidden transform transition-all">
+            <div class="bg-brand-900 p-6 text-white text-center relative">
+                <div class="inline-flex p-3 bg-brand-800 rounded-full mb-3 text-yellow-400 border border-brand-600">
+                    <i class="fa-solid fa-graduation-cap text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold tracking-tight">SSC & RRB Mock Exam</h2>
+                <p class="text-brand-100 text-sm mt-1">Topic: Percentages (Basic Level - 50 PYQs)</p>
+            </div>
+            
+            <form id="startExamForm" onsubmit="handleExamStart(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Candidate Full Name *</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <input type="text" id="candidateName" required placeholder="e.g. Rahul Sharma" 
+                               class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-slate-800 font-medium">
+                    </div>
+                </div>
+
+                <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 space-y-1">
+                    <p class="font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-shield-halved text-amber-600"></i> CBT Anti-Malpractice Rules:
+                    </p>
+                    <ul class="list-disc list-inside space-y-0.5 text-slate-600">
+                        <li>Test will automatically enter <b>Fullscreen Mode</b>.</li>
+                        <li><b>Tab switching & window blur</b> are strictly logged.</li>
+                        <li>Exceeding <b>3 warnings</b> causes immediate auto-submission.</li>
+                        <li>Right click & copying are disabled.</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+                    <span>Start Test Now</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== WARNING MODAL (ANTI-CHEAT) ==================== -->
+    <div id="warningModal" class="hidden fixed inset-0 bg-red-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center border-4 border-red-500 animate-bounce-short">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600 mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">Malpractice Warning!</h3>
+            <p class="text-slate-600 text-sm mt-2">
+                You switched tabs or left the examination screen. This activity is strictly prohibited.
+            </p>
+            <div class="my-4 py-2 bg-red-50 text-red-700 font-semibold rounded-lg text-lg border border-red-200">
+                Warning <span id="warningCountDisplay">1</span> of 3
+            </div>
+            <p class="text-xs text-slate-500 mb-6">If you reach 3 warnings, your exam will be automatically locked & submitted immediately.</p>
+            <button onclick="dismissWarning()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition">
+                I Understand & Resume Test
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN TEST INTERFACE ==================== -->
+    <div id="examInterface" class="hidden flex-col h-screen overflow-hidden">
+        
+        <!-- Header -->
+        <header class="bg-brand-900 text-white px-4 py-2.5 flex justify-between items-center shadow-md flex-wrap gap-2">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-brand-700 rounded-lg flex items-center justify-center font-bold text-yellow-400 text-lg border border-brand-500">
+                    CBT
+                </div>
+                <div>
+                    <h1 class="font-bold text-base md:text-lg leading-tight text-white">SSC & RRB Percentage Mock Test</h1>
+                    <p class="text-xs text-brand-200">Basic Level • 50 Questions • 50 Marks</p>
+                </div>
+            </div>
+
+            <!-- Timer & Student Info -->
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex items-center gap-2 bg-brand-800 px-3 py-1.5 rounded-lg border border-brand-700">
+                    <i class="fa-solid fa-user-circle text-brand-300"></i>
+                    <div class="text-xs">
+                        <p id="headerCandidateName" class="font-semibold text-white truncate max-w-[150px]">Candidate</p>
+                    </div>
+                </div>
+
+                <!-- Clock -->
+                <div class="bg-amber-400 text-slate-900 px-4 py-1.5 rounded-lg font-mono font-bold flex items-center gap-2 shadow-inner">
+                    <i class="fa-regular fa-clock animate-pulse text-red-700"></i>
+                    <span id="timerDisplay" class="text-lg">30:00</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Body: Split into Question Area & Palette -->
+        <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+            
+            <!-- Left Panel: Question Display -->
+            <main class="flex-1 flex flex-col bg-white overflow-y-auto border-r border-slate-200">
+                
+                <!-- Q Top Bar -->
+                <div class="px-6 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center text-xs font-semibold text-slate-600">
+                    <span class="bg-brand-100 text-brand-800 px-2.5 py-1 rounded-md border border-brand-200">
+                        Question No. <span id="currentQNum">1</span> / 50
+                    </span>
+                    <div class="flex gap-4">
+                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> +1.0 Mark</span>
+                        <span class="text-red-500"><i class="fa-solid fa-circle-xmark"></i> -0.25 Mark</span>
+                    </div>
+                </div>
+
+                <!-- Question & Options Content -->
+                <div class="p-6 flex-1 overflow-y-auto space-y-6">
+                    <div class="text-base md:text-lg font-semibold text-slate-800 leading-relaxed" id="questionText">
+                        Loading question...
+                    </div>
+
+                    <div id="optionsContainer" class="space-y-3 max-w-3xl">
+                        <!-- Options injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Bottom Action Controls -->
+                <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="markForReview()" class="px-4 py-2 bg-purple-100 text-purple-800 hover:bg-purple-200 font-medium text-xs md:text-sm rounded-lg border border-purple-300 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-bookmark"></i> Mark for Review & Next
+                        </button>
+                        <button onclick="clearResponse()" class="px-4 py-2 bg-slate-200 text-slate-700 hover:bg-slate-300 font-medium text-xs md:text-sm rounded-lg transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-eraser"></i> Clear Response
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="navigateQuestion(-1)" id="prevBtn" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-xs md:text-sm rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-chevron-left text-xs"></i> Previous
+                        </button>
+                        <button onclick="saveAndNext()" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium text-xs md:text-sm rounded-lg shadow transition flex items-center gap-1">
+                            Save & Next <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Right Panel: Question Palette Sidebar -->
+            <aside class="w-full md:w-80 bg-slate-50 border-t md:border-t-0 border-slate-200 flex flex-col h-auto md:h-full">
+                <!-- User Profile Bar in Palette -->
+                <div class="p-3 bg-slate-200 border-b border-slate-300 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-slate-400 rounded-full flex items-center justify-center text-white text-lg font-bold">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="text-xs overflow-hidden">
+                        <p id="sidebarCandidateName" class="font-bold text-slate-800 truncate">Candidate Name</p>
+                        <p class="text-slate-600 truncate">SSC & RRB Aspirant</p>
+                    </div>
+                </div>
+
+                <!-- Palette Legend -->
+                <div class="p-3 border-b border-slate-200 bg-white grid grid-cols-2 gap-2 text-[11px] font-medium text-slate-700">
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-md bg-slate-200 border border-slate-300 flex items-center justify-center font-bold text-slate-700" id="cntNotVisited">0</span> Not Visited
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-md bg-red-500 text-white flex items-center justify-center font-bold" id="cntNotAnswered">0</span> Not Answered
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-md bg-green-500 text-white flex items-center justify-center font-bold" id="cntAnswered">0</span> Answered
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-md bg-purple-600 text-white flex items-center justify-center font-bold" id="cntMarked">0</span> Marked for Review
+                    </div>
+                    <div class="flex items-center gap-2 col-span-2">
+                        <span class="w-5 h-5 rounded-md bg-indigo-600 text-white relative flex items-center justify-center font-bold" id="cntAnsMarked">
+                            0<span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border border-white"></span>
+                        </span> Ans & Marked for Review
+                    </div>
+                </div>
+
+                <!-- Question Grid -->
+                <div class="p-3 flex-1 overflow-y-auto max-h-60 md:max-h-full">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Question Palette</p>
+                    <div id="questionGrid" class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-5 gap-2">
+                        <!-- 50 Palette items injected here -->
+                    </div>
+                </div>
+
+                <!-- Submit Button Container -->
+                <div class="p-3 bg-white border-t border-slate-200">
+                    <button onclick="confirmSubmitTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Submit Test
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- ==================== SUBMIT CONFIRMATION MODAL ==================== -->
+    <div id="submitModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-slate-800">
+            <h3 class="text-xl font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-circle-question text-brand-600"></i> Exam Summary & Confirmation
+            </h3>
+            
+            <div class="grid grid-cols-2 gap-3 text-sm mb-6">
+                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                    <p class="text-slate-500 text-xs">Total Questions</p>
+                    <p class="text-lg font-bold">50</p>
+                </div>
+                <div class="p-2.5 bg-green-50 rounded-lg border border-green-200">
+                    <p class="text-green-700 text-xs">Answered</p>
+                    <p class="text-lg font-bold text-green-700" id="summaryAns">0</p>
+                </div>
+                <div class="p-2.5 bg-red-50 rounded-lg border border-red-200">
+                    <p class="text-red-700 text-xs">Unanswered / Skipped</p>
+                    <p class="text-lg font-bold text-red-700" id="summaryUnans">0</p>
+                </div>
+                <div class="p-2.5 bg-purple-50 rounded-lg border border-purple-200">
+                    <p class="text-purple-700 text-xs">Marked for Review</p>
+                    <p class="text-lg font-bold text-purple-700" id="summaryMarked">0</p>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-500 mb-6">Are you sure you want to submit your test? You will not be able to change your answers after submission.</p>
+
+            <div class="flex gap-3">
+                <button onclick="closeSubmitModal()" class="flex-1 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition">
+                    Continue Test
+                </button>
+                <button onclick="finalSubmitExam()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow transition">
+                    Yes, Submit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== RESULTS & RESPONSE SHEET PAGE ==================== -->
+    <div id="resultsInterface" class="hidden min-h-screen bg-slate-100 p-4 md:p-8 flex-col">
+        <div class="max-w-6xl mx-auto w-full space-y-6">
+            
+            <!-- Result Header Banner -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center text-brand-700 text-3xl font-extrabold border border-brand-300">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-brand-600 uppercase tracking-widest">Exam Result Overview</span>
+                        <h2 class="text-2xl font-black text-slate-900" id="resCandidateName">Candidate Name</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Exam: SSC & RRB Percentage (Basic Level)</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="downloadPDFResponseSheet()" class="px-5 py-3 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-file-pdf text-red-300"></i> Download Official Response Sheet (PDF)
+                    </button>
+                    <button onclick="location.reload()" class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition text-sm">
+                        <i class="fa-solid fa-rotate-right"></i> Re-take Test
+                    </button>
+                </div>
+            </div>
+
+            <!-- Score Metric Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Score Obtained</p>
+                    <p class="text-2xl font-black text-brand-700 mt-1" id="resScore">0.00 / 50</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Accuracy Rate</p>
+                    <p class="text-2xl font-black text-emerald-600 mt-1" id="resAccuracy">0%</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Correct</p>
+                    <p class="text-2xl font-black text-green-600 mt-1" id="resCorrect">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Incorrect</p>
+                    <p class="text-2xl font-black text-red-500 mt-1" id="resIncorrect">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Unattempted</p>
+                    <p class="text-2xl font-black text-slate-500 mt-1" id="resUnattempted">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Time Taken</p>
+                    <p class="text-2xl font-black text-amber-600 mt-1" id="resTimeTaken">0m 0s</p>
+                </div>
+            </div>
+
+            <!-- Detailed Answer Key & Explanations Header -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-brand-600"></i> Answer Key & Detailed Solutions
+                        </h3>
+                        <p class="text-xs text-slate-500">Review your responses alongside correct answers and step-by-step explanations.</p>
+                    </div>
+                </div>
+
+                <!-- Accordion/List of Question Solutions -->
+                <div id="solutionsContainer" class="space-y-6">
+                    <!-- Detailed solutions rendered dynamically -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        // QUESTION BANK: 50 SSC & RRB PYQs (Percentages - Basic Level)
+        const questionsData = [
+            { id: 1, q: "Express 45% as a fraction in its simplest form.", options: ["9/20", "7/20", "3/10", "11/20"], ans: 0, exp: "45% = 45 / 100 = 9 / 20." },
+            { id: 2, q: "What is 20% of 350?", options: ["60", "70", "80", "75"], ans: 1, exp: "(20/100) × 350 = 70." },
+            { id: 3, q: "Convert 3/5 into a percentage.", options: ["50%", "55%", "60%", "65%"], ans: 2, exp: "(3/5) × 100% = 60%." },
+            { id: 4, q: "If 15% of a number is 45, find the number.", options: ["250", "300", "350", "400"], ans: 1, exp: "Let number be x. 0.15 × x = 45 ⇒ x = 45 / 0.15 = 300." },
+            { id: 5, q: "What percentage of 80 is 16?", options: ["15%", "20%", "25%", "30%"], ans: 1, exp: "(16 / 80) × 100% = 20%." },
+            { id: 6, q: "A number increases from 50 to 65. What is the percentage increase?", options: ["25%", "30%", "20%", "35%"], ans: 1, exp: "Increase = 15. % Increase = (15 / 50) × 100 = 30%." },
+            { id: 7, q: "A salary decreases from ₹8,000 to ₹6,400. Find the percentage decrease.", options: ["15%", "18%", "20%", "25%"], ans: 2, exp: "Decrease = 1,600. % Decrease = (1,600 / 8,000) × 100 = 20%." },
+            { id: 8, q: "If A's income is 25% more than B's income, by what percentage is B's income less than A's?", options: ["20%", "25%", "16.66%", "15%"], ans: 0, exp: "Formula: [R / (100 + R)] × 100 = [25 / 125] × 100 = 20%." },
+            { id: 9, q: "If A's height is 20% less than B's height, by what percentage is B's height more than A's?", options: ["20%", "22.5%", "25%", "30%"], ans: 2, exp: "Formula: [R / (100 - R)] × 100 = [20 / 80] × 100 = 25%." },
+            { id: 10, q: "A student scored 175 marks out of 250. What is his percentage of marks?", options: ["65%", "70%", "72%", "75%"], ans: 1, exp: "(175 / 250) × 100 = 70%." },
+
+            { id: 11, q: "In an exam, 35% marks are required to pass. A candidate gets 140 marks and fails by 35 marks. Find the maximum marks.", options: ["400", "500", "450", "600"], ans: 1, exp: "Passing Marks = 140 + 35 = 175. 35% of Total = 175 ⇒ Total = (175/35) × 100 = 500." },
+            { id: 12, q: "The population of a village is 5,000. It increases by 10% annually. What will be the population after 1 year?", options: ["5,250", "5,400", "5,500", "5,600"], ans: 2, exp: "5,000 + 10% of 5,000 = 5,000 + 500 = 5,500." },
+            { id: 13, q: "If the price of sugar increases by 20%, by how much percent should consumption be reduced to keep expenditure same?", options: ["16.67%", "20%", "15%", "18.33%"], ans: 0, exp: "[R / (100 + R)] × 100 = [20 / 120] × 100 = 16.67%." },
+            { id: 14, q: "What is 12.5% expressed as a fraction?", options: ["1/6", "1/7", "1/8", "1/9"], ans: 2, exp: "12.5% = 12.5 / 100 = 1/8." },
+            { id: 15, q: "If 60% of students in a school of 1,200 are boys, how many girls are there?", options: ["420", "480", "500", "520"], ans: 1, exp: "Girls % = 40%. Girls = 40% of 1,200 = 480." },
+            { id: 16, q: "Raman spends 80% of his income. If his income is ₹25,000, find his savings.", options: ["₹4,000", "₹5,000", "₹6,000", "₹4,500"], ans: 1, exp: "Savings % = 20%. Savings = 20% of 25,000 = ₹5,000." },
+            { id: 17, q: "Evaluate: 50% of 40 + 20% of 60.", options: ["30", "32", "34", "36"], ans: 1, exp: "50% of 40 = 20; 20% of 60 = 12; Total = 20 + 12 = 32." },
+            { id: 18, q: "In an election between 2 candidates, the winner got 62% of total valid votes and won by 1,440 votes. Find total votes.", options: ["5,000", "6,000", "7,200", "8,000"], ans: 1, exp: "Winner = 62%, Loser = 38%. Margin = 24%. 24% of Total = 1,440 ⇒ Total = (1440/24) × 100 = 6,000." },
+            { id: 19, q: "A number is increased by 10% and then decreased by 10%. What is the net percentage change?", options: ["No change", "1% increase", "1% decrease", "2% decrease"], ans: 2, exp: "Net Change = 10 - 10 - (10×10)/100 = -1% (1% decrease)." },
+            { id: 20, q: "Convert 0.045 into a percentage.", options: ["4.5%", "45%", "0.45%", "450%"], ans: 0, exp: "0.045 × 100% = 4.5%." },
+
+            { id: 21, q: "If 40% of (A + B) = 60% of (A - B), then find the ratio A : B.", options: ["3 : 1", "5 : 1", "2 : 1", "4 : 1"], ans: 1, exp: "40(A+B) = 60(A-B) ⇒ 2(A+B) = 3(A-B) ⇒ 2A+2B = 3A-3B ⇒ A = 5B ⇒ A/B = 5/1." },
+            { id: 22, q: "What is 33.33% of 900?", options: ["250", "300", "350", "400"], ans: 1, exp: "33.33% = 1/3. (1/3) × 900 = 300." },
+            { id: 23, q: "Price of an article is ₹500. It is discounted by 10% and then again by 20%. Final price is?", options: ["₹350", "₹360", "₹380", "₹400"], ans: 1, exp: "After 1st discount = 500 × 0.9 = 450. After 2nd discount = 450 × 0.8 = ₹360." },
+            { id: 24, q: "If 120 is 20% of a number, then 120% of that number will be:", options: ["360", "600", "720", "840"], ans: 2, exp: "Number = 120 / 0.20 = 600. 120% of 600 = 1.2 × 600 = 720." },
+            { id: 25, q: "Two numbers are respectively 20% and 50% more than a third number. Ratio of the two numbers is:", options: ["2 : 5", "3 : 5", "4 : 5", "5 : 6"], ans: 2, exp: "Let 3rd number = 100. N1 = 120, N2 = 150. Ratio = 120 : 150 = 4 : 5." },
+            { id: 26, q: "A box has 100 blue balls, 50 red balls, 50 black balls. 25% of blue and 50% of red balls are taken away. % of black balls now is:", options: ["25%", "33.33%", "40%", "50%"], ans: 1, exp: "Remaining blue = 75, red = 25, black = 50. Total remaining = 150. % Black = (50/150)×100 = 33.33%." },
+            { id: 27, q: "A fruit seller had some apples. He sells 40% apples and still has 420 apples. Originally he had:", options: ["580", "600", "700", "750"], ans: 2, exp: "Remaining % = 60%. 60% = 420 ⇒ Total = (420/60) × 100 = 700." },
+            { id: 28, q: "What is 75% of 80% of 500?", options: ["250", "300", "320", "350"], ans: 1, exp: "0.75 × 0.80 × 500 = 300." },
+            { id: 29, q: "If X is 80% of Y, what percent of X is Y?", options: ["80%", "100%", "125%", "150%"], ans: 2, exp: "X = 0.8 Y ⇒ Y/X = 1/0.8 = 1.25 ⇒ 125%." },
+            { id: 30, q: "Subhash scored 45 out of 60 in Science and 70 out of 80 in Math. In which subject did he perform better percentage-wise?", options: ["Science", "Math", "Equal in both", "Cannot be determined"], ans: 1, exp: "Science % = (45/60)×100 = 75%. Math % = (70/80)×100 = 87.5%. Math performance is better." },
+
+            { id: 31, q: "The salary of a person is first increased by 20% and then decreased by 20%. Change in salary:", options: ["4% decrease", "4% increase", "No change", "2% decrease"], ans: 0, exp: "Net = 20 - 20 - (20×20)/100 = -4% (4% decrease)." },
+            { id: 32, q: "If 8% of x is the same as 4% of y, then 20% of x is the same as:", options: ["10% of y", "16% of y", "80% of y", "5% of y"], ans: 0, exp: "0.08x = 0.04y ⇒ y = 2x. Therefore 20% of x = 10% of y." },
+            { id: 33, q: "If radius of a circle is increased by 10%, area increases by:", options: ["10%", "20%", "21%", "25%"], ans: 2, exp: "Area ∝ r^2. % increase = 10 + 10 + (10×10)/100 = 21%." },
+            { id: 34, q: "In a test, an examinee gets 30% marks and fails by 12 marks. Another gets 40% and gets 28 marks more than pass mark. Pass mark is:", options: ["112", "132", "150", "160"], ans: 1, exp: "Diff in % = 10%. Diff in marks = 28 - (-12) = 40. Total = 400. Pass marks = 30% of 400 + 12 = 120 + 12 = 132." },
+            { id: 35, q: "Population of a town increases by 5% every year. Present population is 9,261. What was it 3 years ago?", options: ["7,500", "8,000", "8,500", "8,800"], ans: 1, exp: "9,261 = P × (21/20)^3 ⇒ 9261 = P × (9261/8000) ⇒ P = 8,000." },
+            { id: 36, q: "A man spends 35% on food, 25% on children education and 80% of remaining on house rent. What % of total income is left?", options: ["6%", "8%", "10%", "12%"], ans: 1, exp: "Spent on food+education = 60%. Remaining = 40%. Rent = 80% of 40% = 32%. Total spent = 92%. Left = 8%." },
+            { id: 37, q: "30% of a number exceeds 20% of the same number by 18. Find the number.", options: ["150", "180", "200", "240"], ans: 1, exp: "(30% - 20%) of x = 18 ⇒ 10% of x = 18 ⇒ x = 180." },
+            { id: 38, q: "If the numerator of a fraction is increased by 200% and denominator by 350%, the resultant fraction is 5/12. Original fraction is:", options: ["5/8", "5/9", "7/12", "11/12"], ans: 0, exp: "(x × 300%) / (y × 450%) = 5/12 ⇒ (3/4.5)(x/y) = 5/12 ⇒ x/y = 5/8." },
+            { id: 39, q: "0.01 is what percent of 0.1?", options: ["1%", "10%", "100%", "0.1%"], ans: 1, exp: "(0.01 / 0.1) × 100% = 0.1 × 100% = 10%." },
+            { id: 40, q: "Out of an income of ₹10,000, a person spends 70%. His savings in rupees is:", options: ["₹2,000", "₹3,000", "₹3,500", "₹4,000"], ans: 1, exp: "Savings % = 30%. Savings = 30% of ₹10,000 = ₹3,000." },
+
+            { id: 41, q: "When 60 is subtracted from 60% of a number, result is 60. The number is:", options: ["120", "150", "180", "200"], ans: 3, exp: "0.60x - 60 = 60 ⇒ 0.60x = 120 ⇒ x = 200." },
+            { id: 42, q: "In an examination, 65% candidates passed in English, 60% in Math, and 40% passed in both. % of candidates who failed in both is:", options: ["15%", "20%", "25%", "30%"], ans: 0, exp: "Passed at least one = 65 + 60 - 40 = 85%. Failed in both = 100 - 85 = 15%." },
+            { id: 43, q: "If side of a square is increased by 25%, its area increases by:", options: ["50%", "56.25%", "60%", "62.5%"], ans: 1, exp: "% Increase = 25 + 25 + (25×25)/100 = 50 + 6.25 = 56.25%." },
+            { id: 44, q: "If price of petrol increases by 25%, by how much percent must a motorist reduce petrol consumption so that expenditure doesn't increase?", options: ["15%", "20%", "25%", "30%"], ans: 1, exp: "[25 / (100 + 25)] × 100 = (25 / 125) × 100 = 20%." },
+            { id: 45, q: "If 50% of (P - Q) = 30% of (P + Q), then Q is what percent of P?", options: ["20%", "25%", "30%", "40%"], ans: 1, exp: "5(P-Q) = 3(P+Q) ⇒ 2P = 8Q ⇒ P = 4Q ⇒ Q/P = 1/4 = 25%." },
+            { id: 46, q: "Ratio of 5:4 expressed as percentage is:", options: ["80%", "100%", "120%", "125%"], ans: 3, exp: "(5/4) × 100% = 125%." },
+            { id: 47, q: "A team played 40 games in a season and won 24 of them. What percent of games did they win?", options: ["50%", "55%", "60%", "65%"], ans: 2, exp: "(24 / 40) × 100 = 60%." },
+            { id: 48, q: "A student has to secure 40% marks to pass. He gets 90 marks and fails by 30 marks. Maximum marks are:", options: ["250", "300", "350", "400"], ans: 1, exp: "Pass mark = 90 + 30 = 120. 40% of Total = 120 ⇒ Total = 300." },
+            { id: 49, q: "Price of an item is reduced by 20%. To restore it to original price, new price must be increased by:", options: ["20%", "22.5%", "25%", "30%"], ans: 2, exp: "[20 / (100 - 20)] × 100 = (20 / 80) × 100 = 25%." },
+            { id: 50, q: "What is 10% of 20% of 30% of 100?", options: ["0.6", "6", "0.06", "60"], ans: 0, exp: "0.10 × 0.20 × 0.30 × 100 = 0.6." }
+        ];
+
+        // USER & STATE VARIABLES
+        let candidateInfo = { name: "" };
+        let currentQuestionIndex = 0;
+        // User responses array: { status: 'notvisited'|'notanswered'|'answered'|'marked'|'ansmarked', selectedOption: null|0|1|2|3 }
+        let userState = Array(50).fill(null).map(() => ({
+            status: 'notvisited',
+            selectedOption: null
+        }));
+
+        let warningCount = 0;
+        let timerSeconds = 30 * 60; // 30 Minutes
+        let timerInterval = null;
+        let examStartTime = 0;
+        let timeSpentSeconds = 0;
+
+        // ---------------- REGISTRATION & EXAM START ----------------
+        function handleExamStart(e) {
+            e.preventDefault();
+            candidateInfo.name = document.getElementById('candidateName').value.trim();
+
+            // UI updates for candidate details
+            document.getElementById('headerCandidateName').textContent = candidateInfo.name;
+            document.getElementById('sidebarCandidateName').textContent = candidateInfo.name;
+
+            // Request Fullscreen
+            requestFullscreenMode();
+
+            // Hide Registration, Show Exam
+            document.getElementById('registrationModal').classList.add('hidden');
+            document.getElementById('examInterface').classList.remove('hidden');
+            document.getElementById('examInterface').classList.add('flex');
+
+            // Initialize Grid & Question
+            initPaletteGrid();
+            userState[0].status = 'notanswered'; // mark Q1 as visited/not answered
+            renderQuestion(0);
+            updatePaletteCounts();
+
+            // Start Timer & Anti-Cheat Listeners
+            examStartTime = Date.now();
+            startTimer();
+            initAntiCheatEngine();
+        }
+
+        function requestFullscreenMode() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(() => {});
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // ---------------- TIMER SYSTEM ----------------
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                timeSpentSeconds++;
+                
+                const m = Math.floor(timerSeconds / 60);
+                const s = timerSeconds % 60;
+                document.getElementById('timerDisplay').textContent = 
+                    `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time's Up! Your test is submitting automatically.");
+                    finalSubmitExam();
+                }
+            }, 1000);
+        }
+
+        // ---------------- ANTI-CHEAT / LOCK SCREEN ----------------
+        function initAntiCheatEngine() {
+            // Disable Right Click
+            document.addEventListener('contextmenu', e => e.preventDefault());
+
+            // Disable Keyboard Shortcuts (Ctrl+C, Ctrl+U, F12, etc.)
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey || e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                    e.preventDefault();
+                }
+            });
+
+            // Detect Window Blur / Tab Switch
+            window.addEventListener('blur', triggerMalpracticeWarning);
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    triggerMalpracticeWarning();
+                }
+            });
+        }
+
+        function triggerMalpracticeWarning() {
+            // Don't trigger if exam is submitted
+            if (!document.getElementById('resultsInterface').classList.contains('hidden')) return;
+
+            warningCount++;
+            document.getElementById('warningCountDisplay').textContent = warningCount;
+            document.getElementById('warningModal').classList.remove('hidden');
+
+            if (warningCount >= 3) {
+                setTimeout(() => {
+                    dismissWarning();
+                    alert("Maximum warnings (3) exceeded! Exam is being auto-submitted due to malpractice policy.");
+                    finalSubmitExam();
+                }, 500);
+            }
+        }
+
+        function dismissWarning() {
+            document.getElementById('warningModal').classList.add('hidden');
+            requestFullscreenMode();
+        }
+
+        // ---------------- PALETTE & NAVIGATION ----------------
+        function initPaletteGrid() {
+            const gridContainer = document.getElementById('questionGrid');
+            gridContainer.innerHTML = '';
+            for (let i = 0; i < 50; i++) {
+                const btn = document.createElement('button');
+                btn.id = `palette-btn-${i}`;
+                btn.className = getPaletteBtnClass(i);
+                btn.textContent = i + 1;
+                btn.onclick = () => jumpToQuestion(i);
+                gridContainer.appendChild(btn);
+            }
+        }
+
+        function getPaletteBtnClass(index) {
+            const st = userState[index].status;
+            let base = "w-9 h-9 rounded-md font-bold text-xs flex items-center justify-center transition border relative ";
+            if (index === currentQuestionIndex) {
+                base += "ring-2 ring-brand-600 ring-offset-1 ";
+            }
+
+            switch(st) {
+                case 'answered': return base + "bg-green-500 text-white border-green-600";
+                case 'notanswered': return base + "bg-red-500 text-white border-red-600";
+                case 'marked': return base + "bg-purple-600 text-white border-purple-700";
+                case 'ansmarked': return base + "bg-indigo-600 text-white border-indigo-700 after:content-[''] after:w-2 after:h-2 after:bg-green-400 after:rounded-full after:absolute after:top-0.5 after:right-0.5";
+                default: return base + "bg-slate-200 text-slate-700 border-slate-300 hover:bg-slate-300";
+            }
+        }
+
+        function updatePaletteCounts() {
+            let notVis = 0, notAns = 0, ans = 0, mrk = 0, ansMrk = 0;
+            userState.forEach(st => {
+                if (st.status === 'notvisited') notVis++;
+                else if (st.status === 'notanswered') notAns++;
+                else if (st.status === 'answered') ans++;
+                else if (st.status === 'marked') mrk++;
+                else if (st.status === 'ansmarked') ansMrk++;
+            });
+
+            document.getElementById('cntNotVisited').textContent = notVis;
+            document.getElementById('cntNotAnswered').textContent = notAns;
+            document.getElementById('cntAnswered').textContent = ans;
+            document.getElementById('cntMarked').textContent = mrk;
+            document.getElementById('cntAnsMarked').textContent = ansMrk;
+
+            // Sync with current Q btn style
+            for (let i = 0; i < 50; i++) {
+                const btn = document.getElementById(`palette-btn-${i}`);
+                if (btn) btn.className = getPaletteBtnClass(i);
+            }
+        }
+
+        function renderQuestion(index) {
+            currentQuestionIndex = index;
+            const q = questionsData[index];
+
+            document.getElementById('currentQNum').textContent = index + 1;
+            document.getElementById('questionText').innerHTML = `<span class="font-bold text-brand-900 mr-2">Q${index + 1}.</span> ${q.q}`;
+
+            const optContainer = document.getElementById('optionsContainer');
+            optContainer.innerHTML = '';
+
+            const optionLabels = ['A', 'B', 'C', 'D'];
+            q.options.forEach((optText, optIdx) => {
+                const isSelected = userState[index].selectedOption === optIdx;
+                const optDiv = document.createElement('div');
+                optDiv.className = `p-3.5 rounded-xl border-2 cursor-pointer transition flex items-center gap-3 ${
+                    isSelected ? 'bg-brand-50 border-brand-600 text-brand-900 font-semibold shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700'
+                }`;
+                optDiv.onclick = () => selectOption(optIdx);
+
+                optDiv.innerHTML = `
+                    <div class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${
+                        isSelected ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600 border border-slate-300'
+                    }">${optionLabels[optIdx]}</div>
+                    <span class="text-sm md:text-base">${optText}</span>
+                `;
+                optContainer.appendChild(optDiv);
+            });
+
+            // Prev button disabled on first Q
+            document.getElementById('prevBtn').disabled = (index === 0);
+            document.getElementById('prevBtn').style.opacity = (index === 0) ? '0.5' : '1';
+
+            updatePaletteCounts();
+        }
+
+        function selectOption(optIdx) {
+            userState[currentQuestionIndex].selectedOption = optIdx;
+            renderQuestion(currentQuestionIndex);
+        }
+
+        function clearResponse() {
+            userState[currentQuestionIndex].selectedOption = null;
+            userState[currentQuestionIndex].status = 'notanswered';
+            renderQuestion(currentQuestionIndex);
+        }
+
+        function saveAndNext() {
+            const currentState = userState[currentQuestionIndex];
+            if (currentState.selectedOption !== null) {
+                currentState.status = 'answered';
+            } else {
+                currentState.status = 'notanswered';
+            }
+
+            if (currentQuestionIndex < 49) {
+                jumpToQuestion(currentQuestionIndex + 1);
+            } else {
+                updatePaletteCounts();
+            }
+        }
+
+        function markForReview() {
+            const currentState = userState[currentQuestionIndex];
+            if (currentState.selectedOption !== null) {
+                currentState.status = 'ansmarked';
+            } else {
+                currentState.status = 'marked';
+            }
+
+            if (currentQuestionIndex < 49) {
+                jumpToQuestion(currentQuestionIndex + 1);
+            } else {
+                updatePaletteCounts();
+            }
+        }
+
+        function jumpToQuestion(targetIndex) {
+            if (userState[targetIndex].status === 'notvisited') {
+                userState[targetIndex].status = 'notanswered';
+            }
+            renderQuestion(targetIndex);
+        }
+
+        function navigateQuestion(direction) {
+            const target = currentQuestionIndex + direction;
+            if (target >= 0 && target < 50) {
+                jumpToQuestion(target);
+            }
+        }
+
+        // ---------------- SUBMIT MODAL & EVALUATION ----------------
+        function confirmSubmitTest() {
+            let ansCount = 0, unansCount = 0, markedCount = 0;
+            userState.forEach(st => {
+                if (st.status === 'answered' || st.status === 'ansmarked') ansCount++;
+                if (st.status === 'notanswered' || st.status === 'notvisited') unansCount++;
+                if (st.status === 'marked' || st.status === 'ansmarked') markedCount++;
+            });
+
+            document.getElementById('summaryAns').textContent = ansCount;
+            document.getElementById('summaryUnans').textContent = unansCount;
+            document.getElementById('summaryMarked').textContent = markedCount;
+
+            document.getElementById('submitModal').classList.remove('hidden');
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submitModal').classList.add('hidden');
+        }
+
+        function finalSubmitExam() {
+            clearInterval(timerInterval);
+            closeSubmitModal();
+
+            // Exit Fullscreen
+            if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+
+            // Calculate Results
+            let correct = 0, incorrect = 0, unattempted = 0;
+            userState.forEach((st, idx) => {
+                if (st.selectedOption === null) {
+                    unattempted++;
+                } else if (st.selectedOption === questionsData[idx].ans) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            });
+
+            const score = (correct * 1.0) - (incorrect * 0.25);
+            const accuracy = (correct + incorrect) > 0 ? ((correct / (correct + incorrect)) * 100).toFixed(1) : 0;
+            
+            const mins = Math.floor(timeSpentSeconds / 60);
+            const secs = timeSpentSeconds % 60;
+
+            // Render Results Page
+            document.getElementById('resCandidateName').textContent = candidateInfo.name;
+            document.getElementById('resScore').textContent = `${score.toFixed(2)} / 50`;
+            document.getElementById('resAccuracy').textContent = `${accuracy}%`;
+            document.getElementById('resCorrect').textContent = correct;
+            document.getElementById('resIncorrect').textContent = incorrect;
+            document.getElementById('resUnattempted').textContent = unattempted;
+            document.getElementById('resTimeTaken').textContent = `${mins}m ${secs}s`;
+
+            renderSolutions();
+
+            // Hide Exam Interface, Show Results
+            document.getElementById('examInterface').classList.add('hidden');
+            document.getElementById('resultsInterface').classList.remove('hidden');
+            document.getElementById('resultsInterface').classList.add('flex');
+        }
+
+        // ---------------- RENDER DETAILED SOLUTIONS ----------------
+        function renderSolutions() {
+            const container = document.getElementById('solutionsContainer');
+            container.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userChoice = userState[idx].selectedOption;
+                const isCorrect = userChoice === q.ans;
+                const isSkipped = userChoice === null;
+
+                let statusBadge = '';
+                if (isSkipped) {
+                    statusBadge = `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-xs font-bold border border-slate-300">Unattempted</span>`;
+                } else if (isCorrect) {
+                    statusBadge = `<span class="bg-green-100 text-green-700 px-2.5 py-1 rounded-md text-xs font-bold border border-green-300"><i class="fa-solid fa-check"></i> Correct (+1.0)</span>`;
+                } else {
+                    statusBadge = `<span class="bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-bold border border-red-300"><i class="fa-solid fa-xmark"></i> Incorrect (-0.25)</span>`;
+                }
+
+                const optLabels = ['A', 'B', 'C', 'D'];
+                const item = document.createElement('div');
+                item.className = 'p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-3';
+                
+                item.innerHTML = `
+                    <div class="flex justify-between items-start gap-3">
+                        <div class="text-sm font-bold text-slate-900">
+                            Q${idx + 1}. ${q.q}
+                        </div>
+                        <div>${statusBadge}</div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        ${q.options.map((opt, oIdx) => {
+                            let optStyle = "bg-white border-slate-200 text-slate-700";
+                            if (oIdx === q.ans) optStyle = "bg-green-100 border-green-400 font-bold text-green-900";
+                            if (oIdx === userChoice && !isCorrect) optStyle = "bg-red-100 border-red-400 font-bold text-red-900";
+
+                            return `
+                                <div class="p-2 rounded-lg border ${optStyle} flex items-center justify-between">
+                                    <span><b>(${optLabels[oIdx]})</b> ${opt}</span>
+                                    ${oIdx === q.ans ? '<i class="fa-solid fa-check-circle text-green-600"></i>' : ''}
+                                    ${(oIdx === userChoice && !isCorrect) ? '<i class="fa-solid fa-times-circle text-red-500"></i>' : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-brand-900">
+                        <span class="font-bold flex items-center gap-1 text-brand-700 mb-1">
+                            <i class="fa-solid fa-lightbulb"></i> Solution & Explanation:
+                        </span>
+                        <p class="text-slate-700">${q.exp}</p>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // ---------------- GENERATE PDF RESPONSE SHEET ----------------
+        function downloadPDFResponseSheet() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Header Banner
+            doc.setFillColor(30, 58, 138); // brand-900
+            doc.rect(0, 0, 210, 28, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.text("SSC & RRB PERCENTAGE MOCK TEST - CANDIDATE RESPONSE SHEET", 14, 18);
+
+            // Candidate Summary Table
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+
+            let correct = 0, incorrect = 0, unattempted = 0;
+            userState.forEach((st, idx) => {
+                if (st.selectedOption === null) unattempted++;
+                else if (st.selectedOption === questionsData[idx].ans) correct++;
+                else incorrect++;
+            });
+            const score = ((correct * 1.0) - (incorrect * 0.25)).toFixed(2);
+
+            const summaryRows = [
+                ["Candidate Name", candidateInfo.name, "Test Date", new Date().toLocaleDateString()],
+                ["Total Score", `${score} / 50`, "Correct / Incorrect", `${correct} / ${incorrect}`]
+            ];
+
+            doc.autoTable({
+                startY: 32,
+                body: summaryRows,
+                theme: 'plain',
+                styles: { fontSize: 9, cellPadding: 2 },
+                columnStyles: {
+                    0: { fontStyle: 'bold', textColor: [100, 116, 139] },
+                    1: { fontStyle: 'bold', textColor: [15, 23, 42] },
+                    2: { fontStyle: 'bold', textColor: [100, 116, 139] },
+                    3: { fontStyle: 'bold', textColor: [15, 23, 42] }
+                }
+            });
+
+            // Table of Questions and Responses
+            const optLabels = ['A', 'B', 'C', 'D'];
+            const tableData = questionsData.map((q, i) => {
+                const uChoice = userState[i].selectedOption;
+                const userChoiceText = uChoice !== null ? `(${optLabels[uChoice]}) ${q.options[uChoice]}` : 'Unattempted';
+                const correctText = `(${optLabels[q.ans]}) ${q.options[q.ans]}`;
+                
+                let resultText = 'Skipped';
+                if (uChoice !== null) {
+                    resultText = uChoice === q.ans ? 'Correct (+1.0)' : 'Incorrect (-0.25)';
+                }
+
+                return [
+                    `Q${i + 1}`,
+                    q.q,
+                    userChoiceText,
+                    correctText,
+                    resultText
+                ];
+            });
+
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 8,
+                head: [['#', 'Question Statement', 'Your Answer', 'Correct Answer', 'Status']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [29, 78, 216], textColor: 255, fontStyle: 'bold', fontSize: 9 },
+                styles: { fontSize: 8, cellPadding: 3 },
+                columnStyles: {
+                    0: { cellWidth: 10, fontStyle: 'bold' },
+                    1: { cellWidth: 70 },
+                    2: { cellWidth: 40 },
+                    3: { cellWidth: 40 },
+                    4: { cellWidth: 30, fontStyle: 'bold' }
+                },
+                didParseCell: function(data) {
+                    if (data.section === 'body' && data.column.index === 4) {
+                        const val = data.cell.raw;
+                        if (val.includes('Correct')) {
+                            data.cell.styles.textColor = [22, 163, 74];
+                        } else if (val.includes('Incorrect')) {
+                            data.cell.styles.textColor = [220, 38, 38];
+                        } else {
+                            data.cell.styles.textColor = [100, 116, 139];
+                        }
+                    }
+                }
+            });
+
+            // Save PDF
+            const safeName = candidateInfo.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'candidate';
+            doc.save(`${safeName}_SSC_RRB_Percentage_ResponseSheet.pdf`);
+        }
+    </script>
+</body>
+</html>
