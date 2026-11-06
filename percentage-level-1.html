@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SSC & RRB Percentage Mock Test (CBT)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- jsPDF & AutoTable for PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -26,13 +26,6 @@
                             700: '#1d4ed8',
                             800: '#1e40af',
                             900: '#1e3a8a',
-                        },
-                        status: {
-                            notvisited: '#e5e7eb',
-                            notanswered: '#ef4444',
-                            answered: '#22c55e',
-                            marked: '#8b5cf6',
-                            ansmarked: '#6366f1'
                         }
                     },
                     fontFamily: {
@@ -50,61 +43,66 @@
             -ms-user-select: none;
             user-select: none;
         }
-        /* Custom scrollbar */
+        /* Mobile momentum scrolling */
+        .touch-scroll {
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Custom thin scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #f1f5f9;
         }
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        /* Touch feedback active state */
+        .touch-active:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
-<body class="bg-slate-100 font-sans text-slate-800 unselectable min-h-screen flex flex-col">
+<body class="bg-slate-100 font-sans text-slate-800 unselectable min-h-screen flex flex-col antialiased">
 
     <!-- ==================== REGISTRATION MODAL ==================== -->
-    <div id="registrationModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 overflow-hidden transform transition-all">
-            <div class="bg-brand-900 p-6 text-white text-center relative">
-                <div class="inline-flex p-3 bg-brand-800 rounded-full mb-3 text-yellow-400 border border-brand-600">
-                    <i class="fa-solid fa-graduation-cap text-3xl"></i>
+    <div id="registrationModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 overflow-hidden my-auto">
+            <div class="bg-brand-900 p-5 sm:p-6 text-white text-center relative">
+                <div class="inline-flex p-3 bg-brand-800 rounded-full mb-2 sm:mb-3 text-yellow-400 border border-brand-600 shadow-inner">
+                    <i class="fa-solid fa-graduation-cap text-2xl sm:text-3xl"></i>
                 </div>
-                <h2 class="text-2xl font-bold tracking-tight">SSC & RRB Mock Exam</h2>
-                <p class="text-brand-100 text-sm mt-1">Topic: Percentages (Basic Level - 50 PYQs)</p>
+                <h2 class="text-xl sm:text-2xl font-bold tracking-tight">SSC & RRB Mock Exam</h2>
+                <p class="text-brand-100 text-xs sm:text-sm mt-0.5">Topic: Percentages (Basic Level - 50 PYQs)</p>
             </div>
             
-            <form id="startExamForm" onsubmit="handleExamStart(event)" class="p-6 space-y-4">
+            <form id="startExamForm" onsubmit="handleExamStart(event)" class="p-4 sm:p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Candidate Full Name *</label>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Candidate Full Name *</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                             <i class="fa-solid fa-user"></i>
                         </span>
                         <input type="text" id="candidateName" required placeholder="e.g. Rahul Sharma" 
-                               class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-slate-800 font-medium">
+                               class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-slate-800 font-semibold text-sm sm:text-base">
                     </div>
                 </div>
 
-                <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 space-y-1">
-                    <p class="font-semibold flex items-center gap-1">
+                <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 space-y-1">
+                    <p class="font-bold flex items-center gap-1.5 text-amber-900">
                         <i class="fa-solid fa-shield-halved text-amber-600"></i> CBT Anti-Malpractice Rules:
                     </p>
-                    <ul class="list-disc list-inside space-y-0.5 text-slate-600">
-                        <li>Test will automatically enter <b>Fullscreen Mode</b>.</li>
+                    <ul class="list-disc list-inside space-y-1 text-slate-700 leading-snug">
+                        <li>Test automatically initiates <b>Fullscreen Mode</b>.</li>
                         <li><b>Tab switching & window blur</b> are strictly logged.</li>
                         <li>Exceeding <b>3 warnings</b> causes immediate auto-submission.</li>
-                        <li>Right click & copying are disabled.</li>
+                        <li>Right click & copying functions are disabled.</li>
                     </ul>
                 </div>
 
-                <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+                <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 active:scale-[0.99] text-white font-bold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm sm:text-base">
                     <span>Start Test Now</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
@@ -114,19 +112,19 @@
 
     <!-- ==================== WARNING MODAL (ANTI-CHEAT) ==================== -->
     <div id="warningModal" class="hidden fixed inset-0 bg-red-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center border-4 border-red-500 animate-bounce-short">
-            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600 mb-4">
-                <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm sm:max-w-md w-full p-5 sm:p-6 text-center border-4 border-red-500">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600 mb-3 text-2xl sm:text-3xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <h3 class="text-xl font-bold text-slate-900">Malpractice Warning!</h3>
-            <p class="text-slate-600 text-sm mt-2">
-                You switched tabs or left the examination screen. This activity is strictly prohibited.
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">Malpractice Warning!</h3>
+            <p class="text-slate-600 text-xs sm:text-sm mt-1.5">
+                You switched tabs or left the examination screen. This activity is logged.
             </p>
-            <div class="my-4 py-2 bg-red-50 text-red-700 font-semibold rounded-lg text-lg border border-red-200">
+            <div class="my-3 sm:my-4 py-2 bg-red-50 text-red-700 font-bold rounded-xl text-base sm:text-lg border border-red-200">
                 Warning <span id="warningCountDisplay">1</span> of 3
             </div>
-            <p class="text-xs text-slate-500 mb-6">If you reach 3 warnings, your exam will be automatically locked & submitted immediately.</p>
-            <button onclick="dismissWarning()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition">
+            <p class="text-[11px] sm:text-xs text-slate-500 mb-4">Reaching 3 warnings causes automatic instant test submission.</p>
+            <button onclick="dismissWarning()" class="w-full bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold py-3 rounded-xl transition text-sm">
                 I Understand & Resume Test
             </button>
         </div>
@@ -135,130 +133,132 @@
     <!-- ==================== MAIN TEST INTERFACE ==================== -->
     <div id="examInterface" class="hidden flex-col h-screen overflow-hidden">
         
-        <!-- Header -->
-        <header class="bg-brand-900 text-white px-4 py-2.5 flex justify-between items-center shadow-md flex-wrap gap-2">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-brand-700 rounded-lg flex items-center justify-center font-bold text-yellow-400 text-lg border border-brand-500">
+        <!-- Mobile & Desktop Sticky Header -->
+        <header class="bg-brand-900 text-white px-3 sm:px-4 py-2 flex justify-between items-center shadow-md shrink-0 z-20">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 bg-brand-700 rounded-lg flex items-center justify-center font-bold text-yellow-400 text-sm sm:text-base border border-brand-500 shrink-0">
                     CBT
                 </div>
-                <div>
-                    <h1 class="font-bold text-base md:text-lg leading-tight text-white">SSC & RRB Percentage Mock Test</h1>
-                    <p class="text-xs text-brand-200">Basic Level • 50 Questions • 50 Marks</p>
+                <div class="overflow-hidden">
+                    <h1 class="font-bold text-xs sm:text-base leading-tight text-white truncate max-w-[140px] xs:max-w-[200px] sm:max-w-none">SSC & RRB Percentage Mock</h1>
+                    <p class="text-[10px] sm:text-xs text-brand-200 truncate">50 Qs • 30 Mins • Basic PYQs</p>
                 </div>
             </div>
 
-            <!-- Timer & Student Info -->
-            <div class="flex items-center gap-4">
-                <div class="hidden sm:flex items-center gap-2 bg-brand-800 px-3 py-1.5 rounded-lg border border-brand-700">
-                    <i class="fa-solid fa-user-circle text-brand-300"></i>
-                    <div class="text-xs">
-                        <p id="headerCandidateName" class="font-semibold text-white truncate max-w-[150px]">Candidate</p>
-                    </div>
+            <div class="flex items-center gap-2 sm:gap-4">
+                <!-- Clock -->
+                <div class="bg-amber-400 text-slate-900 px-2.5 sm:px-4 py-1.5 rounded-lg font-mono font-bold flex items-center gap-1.5 shadow-inner text-xs sm:text-base">
+                    <i class="fa-regular fa-clock animate-pulse text-red-700"></i>
+                    <span id="timerDisplay">30:00</span>
                 </div>
 
-                <!-- Clock -->
-                <div class="bg-amber-400 text-slate-900 px-4 py-1.5 rounded-lg font-mono font-bold flex items-center gap-2 shadow-inner">
-                    <i class="fa-regular fa-clock animate-pulse text-red-700"></i>
-                    <span id="timerDisplay" class="text-lg">30:00</span>
-                </div>
+                <!-- Palette Toggle Button (Mobile Only) -->
+                <button onclick="toggleMobilePalette()" class="md:hidden p-2 bg-brand-800 hover:bg-brand-700 text-white rounded-lg border border-brand-600 text-xs font-semibold flex items-center gap-1.5">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span class="hidden xs:inline">Palette</span>
+                </button>
             </div>
         </header>
 
-        <!-- Main Body: Split into Question Area & Palette -->
-        <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+        <!-- Main Body: Question Area + Responsive Slide Palette -->
+        <div class="flex-1 flex overflow-hidden relative">
             
-            <!-- Left Panel: Question Display -->
-            <main class="flex-1 flex flex-col bg-white overflow-y-auto border-r border-slate-200">
+            <!-- Left Area: Question & Answers -->
+            <main class="flex-1 flex flex-col bg-white overflow-hidden w-full">
                 
-                <!-- Q Top Bar -->
-                <div class="px-6 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center text-xs font-semibold text-slate-600">
-                    <span class="bg-brand-100 text-brand-800 px-2.5 py-1 rounded-md border border-brand-200">
-                        Question No. <span id="currentQNum">1</span> / 50
+                <!-- Q Top Status Bar -->
+                <div class="px-3 sm:px-6 py-2.5 bg-slate-50 border-b border-slate-200 flex justify-between items-center text-xs font-semibold text-slate-600 shrink-0">
+                    <span class="bg-brand-100 text-brand-800 px-2 sm:px-3 py-1 rounded-md border border-brand-200 font-bold text-xs">
+                        Q. <span id="currentQNum">1</span> / 50
                     </span>
-                    <div class="flex gap-4">
-                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> +1.0 Mark</span>
-                        <span class="text-red-500"><i class="fa-solid fa-circle-xmark"></i> -0.25 Mark</span>
+                    <div class="flex gap-2 sm:gap-4 text-[11px] sm:text-xs">
+                        <span class="text-green-600 font-bold"><i class="fa-solid fa-circle-check"></i> +1.0</span>
+                        <span class="text-red-500 font-bold"><i class="fa-solid fa-circle-xmark"></i> -0.25</span>
                     </div>
                 </div>
 
-                <!-- Question & Options Content -->
-                <div class="p-6 flex-1 overflow-y-auto space-y-6">
-                    <div class="text-base md:text-lg font-semibold text-slate-800 leading-relaxed" id="questionText">
+                <!-- Question & Options Content Container -->
+                <div class="p-4 sm:p-6 flex-1 overflow-y-auto touch-scroll space-y-4 sm:space-y-6">
+                    <div class="text-sm sm:text-base md:text-lg font-semibold text-slate-800 leading-relaxed" id="questionText">
                         Loading question...
                     </div>
 
-                    <div id="optionsContainer" class="space-y-3 max-w-3xl">
+                    <div id="optionsContainer" class="space-y-2.5 sm:space-y-3 max-w-3xl">
                         <!-- Options injected dynamically -->
                     </div>
                 </div>
 
-                <!-- Bottom Action Controls -->
-                <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="markForReview()" class="px-4 py-2 bg-purple-100 text-purple-800 hover:bg-purple-200 font-medium text-xs md:text-sm rounded-lg border border-purple-300 transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-bookmark"></i> Mark for Review & Next
+                <!-- Mobile & Desktop Sticky Bottom Action Controls -->
+                <div class="p-2.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 shrink-0">
+                    <div class="flex gap-1.5 sm:gap-2 flex-1 sm:flex-none">
+                        <button onclick="markForReview()" class="flex-1 sm:flex-none px-2.5 sm:px-4 py-2.5 bg-purple-100 hover:bg-purple-200 text-purple-800 font-semibold text-xs rounded-xl border border-purple-300 transition flex items-center justify-center gap-1 touch-active">
+                            <i class="fa-solid fa-bookmark text-xs"></i> <span class="hidden xs:inline">Review & Next</span><span class="xs:hidden">Review</span>
                         </button>
-                        <button onclick="clearResponse()" class="px-4 py-2 bg-slate-200 text-slate-700 hover:bg-slate-300 font-medium text-xs md:text-sm rounded-lg transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-eraser"></i> Clear Response
+                        <button onclick="clearResponse()" class="flex-1 sm:flex-none px-2.5 sm:px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1 touch-active">
+                            <i class="fa-solid fa-eraser text-xs"></i> Clear
                         </button>
                     </div>
 
-                    <div class="flex gap-2">
-                        <button onclick="navigateQuestion(-1)" id="prevBtn" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-xs md:text-sm rounded-lg transition flex items-center gap-1">
-                            <i class="fa-solid fa-chevron-left text-xs"></i> Previous
+                    <div class="flex gap-1.5 sm:gap-2 flex-1 sm:flex-none">
+                        <button onclick="navigateQuestion(-1)" id="prevBtn" class="flex-1 sm:flex-none px-3 sm:px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1 touch-active">
+                            <i class="fa-solid fa-chevron-left text-xs"></i> Prev
                         </button>
-                        <button onclick="saveAndNext()" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium text-xs md:text-sm rounded-lg shadow transition flex items-center gap-1">
+                        <button onclick="saveAndNext()" class="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1 touch-active">
                             Save & Next <i class="fa-solid fa-chevron-right text-xs"></i>
                         </button>
                     </div>
                 </div>
             </main>
 
-            <!-- Right Panel: Question Palette Sidebar -->
-            <aside class="w-full md:w-80 bg-slate-50 border-t md:border-t-0 border-slate-200 flex flex-col h-auto md:h-full">
-                <!-- User Profile Bar in Palette -->
-                <div class="p-3 bg-slate-200 border-b border-slate-300 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-slate-400 rounded-full flex items-center justify-center text-white text-lg font-bold">
-                        <i class="fa-solid fa-user"></i>
+            <!-- Overlay backdrop for mobile drawer -->
+            <div id="paletteOverlay" onclick="toggleMobilePalette()" class="hidden md:hidden fixed inset-0 bg-slate-900/50 z-30 transition-opacity"></div>
+
+            <!-- Right Panel: Question Palette (Collapsible Drawer on Mobile, Sticky Sidebar on Desktop) -->
+            <aside id="paletteSidebar" class="fixed md:static top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-slate-50 border-l border-slate-200 flex flex-col h-full z-40 transform translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+                
+                <!-- Mobile Drawer Close Header -->
+                <div class="p-3 bg-slate-200 border-b border-slate-300 flex items-center justify-between">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <div class="w-8 h-8 bg-brand-700 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <p id="sidebarCandidateName" class="font-bold text-xs text-slate-800 truncate">Candidate Name</p>
                     </div>
-                    <div class="text-xs overflow-hidden">
-                        <p id="sidebarCandidateName" class="font-bold text-slate-800 truncate">Candidate Name</p>
-                        <p class="text-slate-600 truncate">SSC & RRB Aspirant</p>
-                    </div>
+                    <button onclick="toggleMobilePalette()" class="md:hidden text-slate-600 hover:text-slate-900 p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
                 </div>
 
                 <!-- Palette Legend -->
-                <div class="p-3 border-b border-slate-200 bg-white grid grid-cols-2 gap-2 text-[11px] font-medium text-slate-700">
-                    <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-md bg-slate-200 border border-slate-300 flex items-center justify-center font-bold text-slate-700" id="cntNotVisited">0</span> Not Visited
+                <div class="p-2.5 border-b border-slate-200 bg-white grid grid-cols-2 gap-1.5 text-[11px] font-semibold text-slate-700 shrink-0">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-4 h-4 rounded bg-slate-200 border border-slate-300 flex items-center justify-center text-[10px]" id="cntNotVisited">0</span> Not Visited
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-md bg-red-500 text-white flex items-center justify-center font-bold" id="cntNotAnswered">0</span> Not Answered
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-4 h-4 rounded bg-red-500 text-white flex items-center justify-center text-[10px]" id="cntNotAnswered">0</span> Not Answered
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-md bg-green-500 text-white flex items-center justify-center font-bold" id="cntAnswered">0</span> Answered
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-4 h-4 rounded bg-green-500 text-white flex items-center justify-center text-[10px]" id="cntAnswered">0</span> Answered
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-md bg-purple-600 text-white flex items-center justify-center font-bold" id="cntMarked">0</span> Marked for Review
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-4 h-4 rounded bg-purple-600 text-white flex items-center justify-center text-[10px]" id="cntMarked">0</span> Marked Review
                     </div>
-                    <div class="flex items-center gap-2 col-span-2">
-                        <span class="w-5 h-5 rounded-md bg-indigo-600 text-white relative flex items-center justify-center font-bold" id="cntAnsMarked">
-                            0<span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border border-white"></span>
-                        </span> Ans & Marked for Review
+                    <div class="flex items-center gap-1.5 col-span-2">
+                        <span class="w-4 h-4 rounded bg-indigo-600 text-white flex items-center justify-center text-[10px]" id="cntAnsMarked">0</span> Ans & Marked
                     </div>
                 </div>
 
                 <!-- Question Grid -->
-                <div class="p-3 flex-1 overflow-y-auto max-h-60 md:max-h-full">
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Question Palette</p>
-                    <div id="questionGrid" class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-5 gap-2">
+                <div class="p-3 flex-1 overflow-y-auto touch-scroll">
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Question Palette</p>
+                    <div id="questionGrid" class="grid grid-cols-5 gap-2">
                         <!-- 50 Palette items injected here -->
                     </div>
                 </div>
 
                 <!-- Submit Button Container -->
-                <div class="p-3 bg-white border-t border-slate-200">
-                    <button onclick="confirmSubmitTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow transition flex items-center justify-center gap-2">
+                <div class="p-3 bg-white border-t border-slate-200 shrink-0">
+                    <button onclick="confirmSubmitTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
                         <i class="fa-solid fa-paper-plane"></i> Submit Test
                     </button>
                 </div>
@@ -267,38 +267,38 @@
     </div>
 
     <!-- ==================== SUBMIT CONFIRMATION MODAL ==================== -->
-    <div id="submitModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-slate-800">
-            <h3 class="text-xl font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-circle-question text-brand-600"></i> Exam Summary & Confirmation
+    <div id="submitModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-5 sm:p-6 text-slate-800 my-auto">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900 border-b pb-3 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-circle-question text-brand-600"></i> Exam Summary
             </h3>
             
-            <div class="grid grid-cols-2 gap-3 text-sm mb-6">
-                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
-                    <p class="text-slate-500 text-xs">Total Questions</p>
-                    <p class="text-lg font-bold">50</p>
+            <div class="grid grid-cols-2 gap-2.5 text-xs sm:text-sm mb-4">
+                <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                    <p class="text-slate-500 text-[11px]">Total Questions</p>
+                    <p class="text-base sm:text-lg font-bold">50</p>
                 </div>
-                <div class="p-2.5 bg-green-50 rounded-lg border border-green-200">
-                    <p class="text-green-700 text-xs">Answered</p>
-                    <p class="text-lg font-bold text-green-700" id="summaryAns">0</p>
+                <div class="p-2.5 bg-green-50 rounded-xl border border-green-200">
+                    <p class="text-green-700 text-[11px]">Answered</p>
+                    <p class="text-base sm:text-lg font-bold text-green-700" id="summaryAns">0</p>
                 </div>
-                <div class="p-2.5 bg-red-50 rounded-lg border border-red-200">
-                    <p class="text-red-700 text-xs">Unanswered / Skipped</p>
-                    <p class="text-lg font-bold text-red-700" id="summaryUnans">0</p>
+                <div class="p-2.5 bg-red-50 rounded-xl border border-red-200">
+                    <p class="text-red-700 text-[11px]">Unanswered</p>
+                    <p class="text-base sm:text-lg font-bold text-red-700" id="summaryUnans">0</p>
                 </div>
-                <div class="p-2.5 bg-purple-50 rounded-lg border border-purple-200">
-                    <p class="text-purple-700 text-xs">Marked for Review</p>
-                    <p class="text-lg font-bold text-purple-700" id="summaryMarked">0</p>
+                <div class="p-2.5 bg-purple-50 rounded-xl border border-purple-200">
+                    <p class="text-purple-700 text-[11px]">Marked Review</p>
+                    <p class="text-base sm:text-lg font-bold text-purple-700" id="summaryMarked">0</p>
                 </div>
             </div>
 
-            <p class="text-xs text-slate-500 mb-6">Are you sure you want to submit your test? You will not be able to change your answers after submission.</p>
+            <p class="text-xs text-slate-500 mb-5">Are you sure you want to submit your test? Answers cannot be modified post-submission.</p>
 
-            <div class="flex gap-3">
-                <button onclick="closeSubmitModal()" class="flex-1 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition">
+            <div class="flex gap-2.5">
+                <button onclick="closeSubmitModal()" class="flex-1 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl transition text-xs sm:text-sm">
                     Continue Test
                 </button>
-                <button onclick="finalSubmitExam()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow transition">
+                <button onclick="finalSubmitExam()" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition text-xs sm:text-sm">
                     Yes, Submit
                 </button>
             </div>
@@ -306,74 +306,71 @@
     </div>
 
     <!-- ==================== RESULTS & RESPONSE SHEET PAGE ==================== -->
-    <div id="resultsInterface" class="hidden min-h-screen bg-slate-100 p-4 md:p-8 flex-col">
-        <div class="max-w-6xl mx-auto w-full space-y-6">
+    <div id="resultsInterface" class="hidden min-h-screen bg-slate-100 p-3 sm:p-6 md:p-8 flex-col touch-scroll overflow-y-auto">
+        <div class="max-w-5xl mx-auto w-full space-y-4 sm:space-y-6">
             
             <!-- Result Header Banner -->
-            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center text-brand-700 text-3xl font-extrabold border border-brand-300">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3.5 text-center md:text-left flex-col sm:flex-row">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 bg-brand-100 rounded-2xl flex items-center justify-center text-brand-700 text-2xl sm:text-3xl font-extrabold border border-brand-300 shrink-0">
                         <i class="fa-solid fa-trophy"></i>
                     </div>
                     <div>
-                        <span class="text-xs font-bold text-brand-600 uppercase tracking-widest">Exam Result Overview</span>
-                        <h2 class="text-2xl font-black text-slate-900" id="resCandidateName">Candidate Name</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Exam: SSC & RRB Percentage (Basic Level)</p>
+                        <span class="text-[10px] sm:text-xs font-bold text-brand-600 uppercase tracking-widest">Exam Performance Report</span>
+                        <h2 class="text-xl sm:text-2xl font-black text-slate-900" id="resCandidateName">Candidate Name</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">SSC & RRB Percentage (Basic Level)</p>
                     </div>
                 </div>
 
-                <div class="flex flex-wrap gap-3">
-                    <button onclick="downloadPDFResponseSheet()" class="px-5 py-3 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition flex items-center gap-2 text-sm">
-                        <i class="fa-solid fa-file-pdf text-red-300"></i> Download Official Response Sheet (PDF)
+                <div class="flex flex-wrap gap-2 sm:gap-3 w-full md:w-auto">
+                    <button onclick="downloadPDFResponseSheet()" class="flex-1 md:flex-none px-4 py-3 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-2 text-xs sm:text-sm">
+                        <i class="fa-solid fa-file-pdf text-red-300"></i> Download PDF Key
                     </button>
-                    <button onclick="location.reload()" class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition text-sm">
+                    <button onclick="location.reload()" class="flex-1 md:flex-none px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition text-xs sm:text-sm flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-rotate-right"></i> Re-take Test
                     </button>
                 </div>
             </div>
 
-            <!-- Score Metric Cards -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Score Obtained</p>
-                    <p class="text-2xl font-black text-brand-700 mt-1" id="resScore">0.00 / 50</p>
+            <!-- Score Metric Grid Cards (Mobile 2 cols, Desktop 6 cols) -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-4">
+                <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase">Score</p>
+                    <p class="text-lg sm:text-2xl font-black text-brand-700 mt-1" id="resScore">0.00 / 50</p>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Accuracy Rate</p>
-                    <p class="text-2xl font-black text-emerald-600 mt-1" id="resAccuracy">0%</p>
+                <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase">Accuracy</p>
+                    <p class="text-lg sm:text-2xl font-black text-emerald-600 mt-1" id="resAccuracy">0%</p>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Correct</p>
-                    <p class="text-2xl font-black text-green-600 mt-1" id="resCorrect">0</p>
+                <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase">Correct</p>
+                    <p class="text-lg sm:text-2xl font-black text-green-600 mt-1" id="resCorrect">0</p>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Incorrect</p>
-                    <p class="text-2xl font-black text-red-500 mt-1" id="resIncorrect">0</p>
+                <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase">Incorrect</p>
+                    <p class="text-lg sm:text-2xl font-black text-red-500 mt-1" id="resIncorrect">0</p>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Unattempted</p>
-                    <p class="text-2xl font-black text-slate-500 mt-1" id="resUnattempted">0</p>
+                <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase">Skipped</p>
+                    <p class="text-lg sm:text-2xl font-black text-slate-500 mt-1" id="resUnattempted">0</p>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Time Taken</p>
-                    <p class="text-2xl font-black text-amber-600 mt-1" id="resTimeTaken">0m 0s</p>
+                <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase">Time Taken</p>
+                    <p class="text-lg sm:text-2xl font-black text-amber-600 mt-1" id="resTimeTaken">0m 0s</p>
                 </div>
             </div>
 
-            <!-- Detailed Answer Key & Explanations Header -->
-            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-list-check text-brand-600"></i> Answer Key & Detailed Solutions
-                        </h3>
-                        <p class="text-xs text-slate-500">Review your responses alongside correct answers and step-by-step explanations.</p>
-                    </div>
+            <!-- Detailed Answer Key Container -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
+                <div class="mb-4">
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-brand-600"></i> Answer Key & Solutions
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Review questions along with correct choices and detailed step-by-step solutions.</p>
                 </div>
 
-                <!-- Accordion/List of Question Solutions -->
-                <div id="solutionsContainer" class="space-y-6">
-                    <!-- Detailed solutions rendered dynamically -->
+                <div id="solutionsContainer" class="space-y-4">
+                    <!-- Dynamic Solutions -->
                 </div>
             </div>
 
@@ -444,7 +441,6 @@
         // USER & STATE VARIABLES
         let candidateInfo = { name: "" };
         let currentQuestionIndex = 0;
-        // User responses array: { status: 'notvisited'|'notanswered'|'answered'|'marked'|'ansmarked', selectedOption: null|0|1|2|3 }
         let userState = Array(50).fill(null).map(() => ({
             status: 'notvisited',
             selectedOption: null
@@ -453,7 +449,6 @@
         let warningCount = 0;
         let timerSeconds = 30 * 60; // 30 Minutes
         let timerInterval = null;
-        let examStartTime = 0;
         let timeSpentSeconds = 0;
 
         // ---------------- REGISTRATION & EXAM START ----------------
@@ -461,26 +456,19 @@
             e.preventDefault();
             candidateInfo.name = document.getElementById('candidateName').value.trim();
 
-            // UI updates for candidate details
-            document.getElementById('headerCandidateName').textContent = candidateInfo.name;
             document.getElementById('sidebarCandidateName').textContent = candidateInfo.name;
 
-            // Request Fullscreen
             requestFullscreenMode();
 
-            // Hide Registration, Show Exam
             document.getElementById('registrationModal').classList.add('hidden');
             document.getElementById('examInterface').classList.remove('hidden');
             document.getElementById('examInterface').classList.add('flex');
 
-            // Initialize Grid & Question
             initPaletteGrid();
-            userState[0].status = 'notanswered'; // mark Q1 as visited/not answered
+            userState[0].status = 'notanswered';
             renderQuestion(0);
             updatePaletteCounts();
 
-            // Start Timer & Anti-Cheat Listeners
-            examStartTime = Date.now();
             startTimer();
             initAntiCheatEngine();
         }
@@ -493,6 +481,21 @@
                 elem.webkitRequestFullscreen();
             } else if (elem.msRequestFullscreen) {
                 elem.msRequestFullscreen();
+            }
+        }
+
+        // ---------------- MOBILE PALETTE TOGGLE ----------------
+        function toggleMobilePalette() {
+            const sidebar = document.getElementById('paletteSidebar');
+            const overlay = document.getElementById('paletteOverlay');
+            const isHidden = sidebar.classList.contains('translate-x-full');
+
+            if (isHidden) {
+                sidebar.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
             }
         }
 
@@ -517,17 +520,14 @@
 
         // ---------------- ANTI-CHEAT / LOCK SCREEN ----------------
         function initAntiCheatEngine() {
-            // Disable Right Click
             document.addEventListener('contextmenu', e => e.preventDefault());
 
-            // Disable Keyboard Shortcuts (Ctrl+C, Ctrl+U, F12, etc.)
             document.addEventListener('keydown', (e) => {
                 if (e.ctrlKey || e.metaKey || e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
                     e.preventDefault();
                 }
             });
 
-            // Detect Window Blur / Tab Switch
             window.addEventListener('blur', triggerMalpracticeWarning);
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) {
@@ -537,7 +537,6 @@
         }
 
         function triggerMalpracticeWarning() {
-            // Don't trigger if exam is submitted
             if (!document.getElementById('resultsInterface').classList.contains('hidden')) return;
 
             warningCount++;
@@ -547,7 +546,7 @@
             if (warningCount >= 3) {
                 setTimeout(() => {
                     dismissWarning();
-                    alert("Maximum warnings (3) exceeded! Exam is being auto-submitted due to malpractice policy.");
+                    alert("Maximum warnings (3) exceeded! Exam is being auto-submitted.");
                     finalSubmitExam();
                 }, 500);
             }
@@ -567,14 +566,23 @@
                 btn.id = `palette-btn-${i}`;
                 btn.className = getPaletteBtnClass(i);
                 btn.textContent = i + 1;
-                btn.onclick = () => jumpToQuestion(i);
+                btn.onclick = () => {
+                    jumpToQuestion(i);
+                    // Close mobile palette drawer if open
+                    if (window.innerWidth < 768) {
+                        const sidebar = document.getElementById('paletteSidebar');
+                        if (!sidebar.classList.contains('translate-x-full')) {
+                            toggleMobilePalette();
+                        }
+                    }
+                };
                 gridContainer.appendChild(btn);
             }
         }
 
         function getPaletteBtnClass(index) {
             const st = userState[index].status;
-            let base = "w-9 h-9 rounded-md font-bold text-xs flex items-center justify-center transition border relative ";
+            let base = "h-9 rounded-lg font-bold text-xs flex items-center justify-center transition border relative touch-active ";
             if (index === currentQuestionIndex) {
                 base += "ring-2 ring-brand-600 ring-offset-1 ";
             }
@@ -604,7 +612,6 @@
             document.getElementById('cntMarked').textContent = mrk;
             document.getElementById('cntAnsMarked').textContent = ansMrk;
 
-            // Sync with current Q btn style
             for (let i = 0; i < 50; i++) {
                 const btn = document.getElementById(`palette-btn-${i}`);
                 if (btn) btn.className = getPaletteBtnClass(i);
@@ -616,7 +623,7 @@
             const q = questionsData[index];
 
             document.getElementById('currentQNum').textContent = index + 1;
-            document.getElementById('questionText').innerHTML = `<span class="font-bold text-brand-900 mr-2">Q${index + 1}.</span> ${q.q}`;
+            document.getElementById('questionText').innerHTML = `<span class="font-extrabold text-brand-900 mr-1.5">Q${index + 1}.</span> ${q.q}`;
 
             const optContainer = document.getElementById('optionsContainer');
             optContainer.innerHTML = '';
@@ -625,23 +632,22 @@
             q.options.forEach((optText, optIdx) => {
                 const isSelected = userState[index].selectedOption === optIdx;
                 const optDiv = document.createElement('div');
-                optDiv.className = `p-3.5 rounded-xl border-2 cursor-pointer transition flex items-center gap-3 ${
+                optDiv.className = `p-3.5 sm:p-4 rounded-xl border-2 cursor-pointer transition flex items-center gap-3 min-h-[48px] touch-active ${
                     isSelected ? 'bg-brand-50 border-brand-600 text-brand-900 font-semibold shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700'
                 }`;
                 optDiv.onclick = () => selectOption(optIdx);
 
                 optDiv.innerHTML = `
-                    <div class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shrink-0 ${
                         isSelected ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600 border border-slate-300'
                     }">${optionLabels[optIdx]}</div>
-                    <span class="text-sm md:text-base">${optText}</span>
+                    <span class="text-xs sm:text-base leading-snug">${optText}</span>
                 `;
                 optContainer.appendChild(optDiv);
             });
 
-            // Prev button disabled on first Q
             document.getElementById('prevBtn').disabled = (index === 0);
-            document.getElementById('prevBtn').style.opacity = (index === 0) ? '0.5' : '1';
+            document.getElementById('prevBtn').style.opacity = (index === 0) ? '0.4' : '1';
 
             updatePaletteCounts();
         }
@@ -725,10 +731,8 @@
             clearInterval(timerInterval);
             closeSubmitModal();
 
-            // Exit Fullscreen
             if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
 
-            // Calculate Results
             let correct = 0, incorrect = 0, unattempted = 0;
             userState.forEach((st, idx) => {
                 if (st.selectedOption === null) {
@@ -746,7 +750,6 @@
             const mins = Math.floor(timeSpentSeconds / 60);
             const secs = timeSpentSeconds % 60;
 
-            // Render Results Page
             document.getElementById('resCandidateName').textContent = candidateInfo.name;
             document.getElementById('resScore').textContent = `${score.toFixed(2)} / 50`;
             document.getElementById('resAccuracy').textContent = `${accuracy}%`;
@@ -757,7 +760,6 @@
 
             renderSolutions();
 
-            // Hide Exam Interface, Show Results
             document.getElementById('examInterface').classList.add('hidden');
             document.getElementById('resultsInterface').classList.remove('hidden');
             document.getElementById('resultsInterface').classList.add('flex');
@@ -775,23 +777,23 @@
 
                 let statusBadge = '';
                 if (isSkipped) {
-                    statusBadge = `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-xs font-bold border border-slate-300">Unattempted</span>`;
+                    statusBadge = `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[11px] font-bold border border-slate-300">Unattempted</span>`;
                 } else if (isCorrect) {
-                    statusBadge = `<span class="bg-green-100 text-green-700 px-2.5 py-1 rounded-md text-xs font-bold border border-green-300"><i class="fa-solid fa-check"></i> Correct (+1.0)</span>`;
+                    statusBadge = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[11px] font-bold border border-green-300"><i class="fa-solid fa-check"></i> Correct</span>`;
                 } else {
-                    statusBadge = `<span class="bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-bold border border-red-300"><i class="fa-solid fa-xmark"></i> Incorrect (-0.25)</span>`;
+                    statusBadge = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[11px] font-bold border border-red-300"><i class="fa-solid fa-xmark"></i> Incorrect</span>`;
                 }
 
                 const optLabels = ['A', 'B', 'C', 'D'];
                 const item = document.createElement('div');
-                item.className = 'p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-3';
+                item.className = 'p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2.5';
                 
                 item.innerHTML = `
-                    <div class="flex justify-between items-start gap-3">
-                        <div class="text-sm font-bold text-slate-900">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="text-xs sm:text-sm font-bold text-slate-900">
                             Q${idx + 1}. ${q.q}
                         </div>
-                        <div>${statusBadge}</div>
+                        <div class="shrink-0">${statusBadge}</div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
@@ -801,20 +803,20 @@
                             if (oIdx === userChoice && !isCorrect) optStyle = "bg-red-100 border-red-400 font-bold text-red-900";
 
                             return `
-                                <div class="p-2 rounded-lg border ${optStyle} flex items-center justify-between">
+                                <div class="p-2.5 rounded-lg border ${optStyle} flex items-center justify-between">
                                     <span><b>(${optLabels[oIdx]})</b> ${opt}</span>
-                                    ${oIdx === q.ans ? '<i class="fa-solid fa-check-circle text-green-600"></i>' : ''}
-                                    ${(oIdx === userChoice && !isCorrect) ? '<i class="fa-solid fa-times-circle text-red-500"></i>' : ''}
+                                    ${oIdx === q.ans ? '<i class="fa-solid fa-check-circle text-green-600 ml-1"></i>' : ''}
+                                    ${(oIdx === userChoice && !isCorrect) ? '<i class="fa-solid fa-times-circle text-red-500 ml-1"></i>' : ''}
                                 </div>
                             `;
                         }).join('')}
                     </div>
 
                     <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-brand-900">
-                        <span class="font-bold flex items-center gap-1 text-brand-700 mb-1">
-                            <i class="fa-solid fa-lightbulb"></i> Solution & Explanation:
+                        <span class="font-bold flex items-center gap-1 text-brand-700 mb-0.5">
+                            <i class="fa-solid fa-lightbulb"></i> Solution:
                         </span>
-                        <p class="text-slate-700">${q.exp}</p>
+                        <p class="text-slate-700 leading-relaxed">${q.exp}</p>
                     </div>
                 `;
                 container.appendChild(item);
@@ -826,15 +828,13 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Header Banner
-            doc.setFillColor(30, 58, 138); // brand-900
+            doc.setFillColor(30, 58, 138);
             doc.rect(0, 0, 210, 28, 'F');
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(16);
+            doc.setFontSize(14);
             doc.setFont("helvetica", "bold");
             doc.text("SSC & RRB PERCENTAGE MOCK TEST - CANDIDATE RESPONSE SHEET", 14, 18);
 
-            // Candidate Summary Table
             doc.setFontSize(10);
             doc.setTextColor(30, 41, 59);
 
@@ -864,7 +864,6 @@
                 }
             });
 
-            // Table of Questions and Responses
             const optLabels = ['A', 'B', 'C', 'D'];
             const tableData = questionsData.map((q, i) => {
                 const uChoice = userState[i].selectedOption;
@@ -913,7 +912,6 @@
                 }
             });
 
-            // Save PDF
             const safeName = candidateInfo.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'candidate';
             doc.save(`${safeName}_SSC_RRB_Percentage_ResponseSheet.pdf`);
         }
