@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPSC & KPSC Prelims Practice Test 2026 - CBT Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- jsPDF and AutoTable for PDF Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.autotable.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .option-radio:checked + label {
+      border-color: #2563eb;
+      background-color: #eff6ff;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col overflow-x-hidden">
+
+  <!-- REGISTRATION MODAL -->
+  <div id="registrationModal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 transform transition-all">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="shield-check" class="w-8 h-8"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800">Civil Services Practice Test</h2>
+        <p class="text-sm text-slate-500 mt-1">UPSC & KPSC Prelims Current Affairs 2026</p>
+      </div>
+
+      <form id="startForm" onsubmit="handleStartTest(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Student Full Name <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <i data-lucide="user" class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="candidateName" required placeholder="Enter your full name" 
+              class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+          </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 space-y-1">
+          <p class="font-semibold flex items-center gap-1"><i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i> Exam Guidelines & Lock Rules:</p>
+          <ul class="list-disc pl-4 space-y-0.5">
+            <li>Total 50 Questions | 60 Minutes duration.</li>
+            <li>Marking: +2.0 for correct answer, -0.66 for incorrect.</li>
+            <li>Anti-Malpractice engine active: Fullscreen mode is enforced.</li>
+            <li>Tab switching, right-clicking, and text copying are forbidden.</li>
+            <li>Exceeding 3 malpractice warnings will auto-submit your test.</li>
+          </ul>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
+          <span>Start Assessment Now</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- WARNING MODAL FOR MALPRACTICE -->
+  <div id="warningModal" class="hidden fixed inset-0 z-50 bg-red-950/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center border-4 border-red-500">
+      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3 animate-bounce">
+        <i data-lucide="alert-octagram" class="w-10 h-10"></i>
+      </div>
+      <h3 class="text-xl font-bold text-red-600 mb-1">Malpractice Warning!</h3>
+      <p class="text-xs text-slate-600 mb-4">You switched tabs, exited fullscreen, or attempted unauthorized shortcuts. This action has been logged.</p>
+      
+      <div class="bg-slate-100 rounded-lg p-3 mb-4 text-center">
+        <span class="text-xs text-slate-500 block">Remaining Warnings Allowed</span>
+        <span id="warningCountText" class="text-2xl font-black text-red-600">3 / 3</span>
+      </div>
+
+      <button onclick="resumeTest()" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg text-sm transition">
+        I Understand & Resume Test
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CBT INTERFACE -->
+  <div id="cbtApp" class="hidden flex-1 flex flex-col h-screen overflow-hidden">
+    <!-- TOP NAVBAR -->
+    <header class="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between shadow-md z-20 shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="bg-blue-600 text-white font-bold px-2.5 py-1 rounded text-xs tracking-wide">UPSC/KPSC</div>
+        <div>
+          <h1 class="font-semibold text-sm sm:text-base leading-tight">Prelims Practice Test 2026</h1>
+          <p class="text-[11px] text-slate-400 hidden sm:block">Current Affairs (Jan–Oct 2026)</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Timer -->
+        <div class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-2">
+          <i data-lucide="clock" class="w-4 h-4 text-amber-400 animate-pulse"></i>
+          <span id="timerDisplay" class="font-mono text-base font-bold text-amber-400">60:00</span>
+        </div>
+
+        <!-- Palette Drawer Toggle Button (Mobile) -->
+        <button onclick="toggleMobilePalette()" class="lg:hidden bg-slate-800 border border-slate-700 p-2 rounded-lg text-slate-300 hover:text-white">
+          <i data-lucide="grid" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Submit Button Header -->
+        <button onclick="confirmSubmitTest()" class="hidden sm:flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition">
+          <span>Submit</span>
+          <i data-lucide="send" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN BODY WORKSPACE -->
+    <div class="flex-1 flex overflow-hidden relative">
+      
+      <!-- LEFT CONTENT AREA: QUESTION & OPTIONS -->
+      <main class="flex-1 flex flex-col bg-slate-50 overflow-y-auto custom-scrollbar p-3 sm:p-6">
+        
+        <!-- QUESTION TOP BAR -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm mb-4 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-md">Question <span id="qNumHeader">1</span> of 50</span>
+            <span class="text-xs text-slate-500 font-medium hidden sm:inline">Current Affairs</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs">
+            <span class="text-emerald-600 font-semibold">+2.0 Marks</span>
+            <span class="text-red-500 font-semibold">-0.66 Neg</span>
+          </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm flex-1 flex flex-col mb-4">
+          <div class="mb-4">
+            <h3 id="questionText" class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed">
+              Loading question text...
+            </h3>
+          </div>
+
+          <!-- OPTIONS LIST -->
+          <div id="optionsContainer" class="space-y-3 my-auto">
+            <!-- Dynamic Options -->
+          </div>
+        </div>
+
+        <!-- BOTTOM ACTION BUTTONS -->
+        <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button onclick="markForReview()" class="flex-1 sm:flex-none py-2.5 px-3.5 bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+              <span>Mark for Review</span>
+            </button>
+            <button onclick="clearResponse()" class="flex-1 sm:flex-none py-2.5 px-3.5 bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5">
+              <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              <span>Clear</span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button onclick="previousQuestion()" id="prevBtn" class="flex-1 sm:flex-none py-2.5 px-4 bg-white text-slate-700 hover:bg-slate-100 border border-slate-300 rounded-lg text-xs font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              <span>Previous</span>
+            </button>
+            <button onclick="saveAndNext()" class="flex-1 sm:flex-none py-2.5 px-5 bg-blue-600 text-white hover:bg-blue-700 rounded-lg text-xs font-semibold shadow-sm transition flex items-center justify-center gap-1">
+              <span>Save & Next</span>
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- RIGHT SIDEBAR: QUESTION PALETTE -->
+      <aside id="paletteSidebar" class="fixed lg:static inset-y-0 right-0 w-72 bg-white border-l border-slate-200 shadow-xl lg:shadow-none flex flex-col z-30 transform translate-x-full lg:translate-x-0 transition-transform duration-300">
+        
+        <!-- Palette Header -->
+        <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-bold text-slate-800">Question Palette</h2>
+            <p id="candidateDisplay" class="text-xs text-slate-500 font-medium truncate max-w-[180px]">Candidate</p>
+          </div>
+          <button onclick="toggleMobilePalette()" class="lg:hidden text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Legend Bar -->
+        <div class="p-3 bg-slate-50 border-b border-slate-200 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded bg-emerald-500 text-white font-bold flex items-center justify-center text-[10px]" id="cntAnswered">0</span>
+            <span class="text-slate-600">Answered</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded bg-red-500 text-white font-bold flex items-center justify-center text-[10px]" id="cntNotAnswered">0</span>
+            <span class="text-slate-600">Not Answered</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded bg-slate-200 text-slate-700 font-bold flex items-center justify-center text-[10px]" id="cntNotVisited">50</span>
+            <span class="text-slate-600">Not Visited</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded bg-purple-600 text-white font-bold flex items-center justify-center text-[10px]" id="cntMarked">0</span>
+            <span class="text-slate-600">Marked</span>
+          </div>
+        </div>
+
+        <!-- Grid Buttons -->
+        <div class="flex-1 p-3 overflow-y-auto custom-scrollbar">
+          <div id="paletteGrid" class="grid grid-cols-5 gap-2">
+            <!-- 50 Buttons dynamically generated -->
+          </div>
+        </div>
+
+        <!-- Mobile Submit Button -->
+        <div class="p-3 border-t border-slate-200 bg-slate-50">
+          <button onclick="confirmSubmitTest()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow transition flex items-center justify-center gap-1">
+            <span>Submit Test Paper</span>
+            <i data-lucide="check-circle" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- SCORECARD & SOLUTION DASHBOARD -->
+  <div id="resultApp" class="hidden min-h-screen bg-slate-100 p-4 sm:p-8 flex flex-col items-center">
+    <div class="max-w-4xl w-full space-y-6">
+      
+      <!-- Top Score Header Card -->
+      <div class="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
+        <div class="bg-slate-900 text-white p-6 text-center relative">
+          <span class="bg-blue-600 text-xs uppercase font-bold px-3 py-1 rounded-full text-blue-100">Official Result</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold mt-2">Test Assessment Summary</h1>
+          <p id="resCandidateName" class="text-slate-300 text-sm mt-1">Student: </p>
+        </div>
+
+        <div class="p-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center border-b border-slate-100">
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <span class="text-xs text-slate-500 font-medium">Final Score</span>
+            <p id="resScore" class="text-2xl font-black text-blue-600">0.0 / 100</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <span class="text-xs text-slate-500 font-medium">Accuracy</span>
+            <p id="resAccuracy" class="text-2xl font-black text-emerald-600">0%</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <span class="text-xs text-slate-500 font-medium">Attempted</span>
+            <p id="resAttempted" class="text-2xl font-black text-slate-800">0 / 50</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <span class="text-xs text-slate-500 font-medium">Time Taken</span>
+            <p id="resTimeTaken" class="text-2xl font-black text-amber-600">0m 0s</p>
+          </div>
+        </div>
+
+        <div class="p-6 flex flex-wrap items-center justify-between gap-4 bg-slate-50">
+          <div class="flex items-center gap-4 text-xs font-semibold">
+            <span class="text-emerald-600 flex items-center gap-1"><i data-lucide="check" class="w-4 h-4"></i> Correct: <b id="resCorrect">0</b></span>
+            <span class="text-red-500 flex items-center gap-1"><i data-lucide="x" class="w-4 h-4"></i> Incorrect: <b id="resIncorrect">0</b></span>
+            <span class="text-slate-500 flex items-center gap-1"><i data-lucide="minus" class="w-4 h-4"></i> Unattempted: <b id="resUnattempted">0</b></span>
+          </div>
+
+          <button onclick="downloadPDFResponseSheet()" class="w-full sm:w-auto px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow transition flex items-center justify-center gap-2 text-xs">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Download Response Sheet (PDF)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SOLUTIONS REVIEW SECTION -->
+      <div class="bg-white border border-slate-200 rounded-2xl shadow-md p-6 space-y-6">
+        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+          <i data-lucide="book-open" class="w-5 h-5 text-blue-600"></i>
+          <span>Detailed Answer Key & Solutions</span>
+        </h2>
+
+        <div id="solutionsContainer" class="space-y-6">
+          <!-- Dynamic Detailed Solutions -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // 50 UPSC & KPSC PRACTICE QUESTIONS WITH SOLUTIONS
+    const rawQuestions = [
+      {
+        q: "Consider the following statements regarding the 'One Nation, One Election' implementation framework discussed in 2026:\n1. The Kovind Committee recommendations require constitutional amendments under Article 368 requiring ratification by at least half of the State Legislatures for simultaneous local body elections.\n2. The synchronization of elections is proposed to be conducted in two phases, starting with Lok Sabha and State Assemblies.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "The high-level committee recommended a two-phase rollout: first synchronizing Lok Sabha and State Legislative Assembly elections, followed by municipal and panchayat elections within 100 days (which requires state ratification)."
+      },
+      {
+        q: "With reference to the Delimitation Commission and the 84th Constitutional Amendment Act, consider the following statements:\n1. The freeze on the reallocation of seats to the Lok Sabha based on the 1971 census expires after the first census taken after 2026.\n2. Delimitation of constituencies within states is currently based on the 2001 Census data.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "Under the 84th Amendment Act, 2002, the freeze on seat count adjustment extends until the first census published after 2026. Internal constituency boundary readjustments were done using 2001 census data."
+      },
+      {
+        q: "Which among the following ministries launched the 'BHARAT-NET Phase III' upgraded infrastructure initiative in mid-2026?",
+        options: ["Ministry of Electronics and Information Technology (MeitY)", "Ministry of Communications", "Ministry of Rural Development", "Ministry of Housing and Urban Affairs"],
+        ans: 1,
+        exp: "BharatNet Phase III is executed under the Department of Telecommunications, Ministry of Communications, aiming to connect all 2.5 lakh Gram Panchayats with high-speed ring topology optical fiber."
+      },
+      {
+        q: "Regarding the Election Commission of India (ECI) appointment provisions under the Chief Election Commissioner and other Election Commissioners Act, 2023, who among the following is NOT part of the Selection Committee?",
+        options: ["Prime Minister", "Leader of Opposition in Lok Sabha", "Chief Justice of India", "A Union Cabinet Minister nominated by the Prime Minister"],
+        ans: 2,
+        exp: "The 2023 Act replaced the CJI in the Selection Committee with a Union Cabinet Minister nominated by the Prime Minister, alongside the PM (Chairperson) and Leader of Opposition in Lok Sabha."
+      },
+      {
+        q: "Consider the following statements regarding the 'SVAMITVA Scheme':\n1. It aims to provide an integrated property validation solution for rural India using drone surveying technology.\n2. Property cards generated under this scheme enable rural households to utilize financial assets for securing bank loans.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "SVAMITVA (Survey of Villages and Mapping with Improvised Technology in Village Areas) is implemented by the Ministry of Panchayati Raj to provide ownership certificates for inhabited rural lands."
+      },
+      {
+        q: "With reference to the Central Bank Digital Currency (CBDC - e₹) framework of the Reserve Bank of India, consider the following:\n1. Offline functionality for CBDC transactions was introduced to facilitate payments in low network coverage areas.\n2. e-Retail bears interest equivalent to savings bank account rates.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 0,
+        exp: "RBI introduced programmable and offline capabilities for CBDC in 2024-2026. However, CBDC is designed to be non-interest bearing to prevent bank disintermediation."
+      },
+      {
+        q: "In the Union Budget 2026-27 discussions, what is the target set for the Fiscal Deficit as a percentage of GDP for India?",
+        options: ["5.1%", "4.5%", "3.5%", "4.0%"],
+        ans: 1,
+        exp: "The Government of India committed to a fiscal consolidation path targeting a fiscal deficit below 4.5% of GDP by FY 2026-27."
+      },
+      {
+        q: "Which institution releases the 'Global Economic Prospects' report bi-annually?",
+        options: ["International Monetary Fund (IMF)", "World Bank", "World Economic Forum (WEF)", "Asian Development Bank (ADB)"],
+        ans: 1,
+        exp: "The World Bank publishes the Global Economic Prospects report twice a year (January and June), detailing global macroeconomic trends."
+      },
+      {
+        q: "Consider the following statements regarding the Sovereign Green Bonds (SGBs) issued by the Government of India:\n1. The proceeds are deployed in public sector projects that help reduce carbon intensity.\n2. Nuclear power projects are eligible for financing through Sovereign Green Bond proceeds.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 0,
+        exp: "Under India's Sovereign Green Bond Framework, nuclear energy, fossil fuels, and large hydro projects (>25 MW) are explicitly excluded from green bond proceeds."
+      },
+      {
+        q: "What is the primary objective of the 'Trade Infrastructure for Export Scheme' (TIES)?",
+        options: ["Providing direct export subsidies to MSMEs", "Assisting Central and State agencies in creating export-linked infrastructure", "Facilitating duty-free imports of capital goods", "Financing start-ups operating in the e-commerce export sector"],
+        ans: 1,
+        exp: "TIES is implemented by the Department of Commerce to address infrastructure gaps such as cold chains, border check posts, and export testing labs."
+      },
+      {
+        q: "With reference to Karnataka's 'Gruha Jyoti' scheme, consider the following statements:\n1. It provides up to 200 units of free electricity per month for domestic consumers in Karnataka.\n2. Commercial establishments with consumption under 100 units are also eligible for benefits.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 0,
+        exp: "Gruha Jyoti covers domestic/residential households only (up to 200 units average monthly consumption). Commercial connections are strictly excluded."
+      },
+      {
+        q: "Which district in Karnataka hosted the inauguration of the state's largest solar-wind hybrid renewable energy park in mid-2026?",
+        options: ["Tumakuru", "Chitradurga", "Ballari", "Koppal"],
+        ans: 1,
+        exp: "Chitradurga district saw the expansion of utility-scale hybrid (solar-wind) energy parks in 2026, leveraging high wind velocity and solar irradiance in the region."
+      },
+      {
+        q: "Regarding the 'Mekedatu Balancing Reservoir Project', consider the following statements:\n1. It is proposed at the confluence of the Cauvery and Arkavathi rivers in Ramanagara district.\n2. The primary objective of the project is to meet the drinking water needs of Bengaluru and generate power.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "Mekedatu is a multi-purpose (drinking water and power) project situated at the confluence of Cauvery and Arkavathi rivers in Kanakapura/Ramanagara district."
+      },
+      {
+        q: "Which Karnataka city was awarded top honors under the National Clean Air Programme (NCAP) monitoring performance review in 2026 for southern cities?",
+        options: ["Mysuru", "Hubballi", "Mangaluru", "Belagavi"],
+        ans: 0,
+        exp: "Mysuru consistently ranks high in air quality indices and urban sanitation standards among mid-sized cities in Karnataka under NCAP evaluations."
+      },
+      {
+        q: "Consider the following statements regarding the 'KWIN City' (Karnataka Knowledge, Wellbeing, Innovation and Insights City) launched near Bengaluru:\n1. It is located between Dindigul and Salem national corridor.\n2. It is planned across 2,000 acres near Doddaballapur-Dabaspete to foster IT, Biotech, and AI hubs.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 1,
+        exp: "KWIN City was launched by the Karnataka government near Doddaballapur-Dabaspete (Bengaluru Rural) targeting futuristic knowledge and AI clusters."
+      },
+      {
+        q: "With reference to the 'Gaganyaan' mission, India's human spaceflight program, consider the following:\n1. 'Vyommitra' is the humanoid robot developed by ISRO for uncrewed test flights.\n2. LVM3 (Launch Vehicle Mark-3) is configured as the launch vehicle for the human-rated mission.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "Both statements are correct. HLVM3 is the human-rated version of LVM3, and Vyommitra is the female humanoid robot designed for microgravity trials."
+      },
+      {
+        q: "What is 'NISAR', frequently seen in news during 2026?",
+        options: ["A deep-sea exploration submersible built by NIOT India", "A joint Earth-observing dual-frequency synthetic aperture radar satellite by NASA and ISRO", "India's indigenous Quantum Supercomputer", "An AI-powered cyber defense system"],
+        ans: 1,
+        exp: "NISAR (NASA-ISRO Synthetic Aperture Radar) uses L-band and S-band radar to map global land mass and ecosystem changes."
+      },
+      {
+        q: "Consider the following statements regarding 'Large Language Models' (LLMs) and Artificial Intelligence developments in 2026:\n1. MoE (Mixture of Experts) architecture activates all parameters in a neural network for every single inference query.\n2. Parameter-Efficient Fine-Tuning (PEFT) methods like LoRA allow adaptation of large models at significantly lower computational costs.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 1,
+        exp: "MoE architecture activates only a subset of expert subnetworks for a given token, rather than all parameters, making statement 1 incorrect. LoRA is a standard PEFT technique."
+      },
+      {
+        q: "In the context of quantum computing, what does the term 'Quantum Supremacy' or 'Quantum Advantage' signify?",
+        options: ["The ability of a quantum computer to operate at room temperature", "The point where a quantum device performs a calculation impossible for classical supercomputers in reasonable time", "Complete replacement of silicon semiconductors by topological qubits", "Encryption standard that cannot be broken by future quantum hardware"],
+        ans: 1,
+        exp: "Quantum Advantage/Supremacy refers to the milestone where quantum processors solve specific mathematical tasks far beyond the reach of classical supercomputers."
+      },
+      {
+        q: "Which Indian institute developed the indigenous semiconductor chip ecosystem under the 'India Semiconductor Mission' (ISM) for IoT edge applications in 2026?",
+        options: ["IIT Madras (DIR-V Shakti)", "IISc Bengaluru", "IIT Bombay", "C-DAC Pune"],
+        ans: 0,
+        exp: "The Digital India RISC-V (DIR-V) program led by IIT Madras (Shakti) and C-DAC (VEGA) forms the backbone of India's open-source chip design initiative."
+      },
+      {
+        q: "With reference to the 'Ramsar Sites' in India updated in 2026, consider the following statements:\n1. India holds the largest number of Ramsar sites in Asia.\n2. Tamil Nadu has the highest number of designated Ramsar sites among Indian states.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "India has over 80 Ramsar sites (the highest in Asia), with Tamil Nadu leading the state-wise tally (16 sites)."
+      },
+      {
+        q: "What is the primary objective of the 'Global Biofuels Alliance' (GBA) initiated during India's G20 Presidency and expanded in 2025-2026?",
+        options: ["Mandatory replacement of aviation fuel with hydrogen by 2030", "Facilitating international trade and adoption of sustainable biofuels", "Imposing carbon tariffs on non-biofuel producing countries", "Funding offshore wind energy installations"],
+        ans: 1,
+        exp: "GBA aims to promote global trade in biofuels, establish standards, and provide technical support for national blending programs."
+      },
+      {
+        q: "Consider the following statements regarding the 'Loss and Damage Fund' operationalized under UNFCCC COP framework:\n1. It is hosted temporarily by the World Bank.\n2. All developing countries are automatically entitled to equal financial payouts annually.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 0,
+        exp: "The Loss and Damage Fund is hosted by the World Bank for an interim period of 4 years. Payouts are based on vulnerability assessments, not equal annual distribution."
+      },
+      {
+        q: "'Great Nicobar Island Development Project' raised environmental concerns primarily due to its impact on which endangered species' nesting habitat?",
+        options: ["Olive Ridley Turtle", "Leatherback Sea Turtle", "Hawksbill Turtle", "Green Sea Turtle"],
+        ans: 1,
+        exp: "Galathea Bay in Great Nicobar is a vital nesting site for the Giant Leatherback Turtle, raising ecological debate over the port project."
+      },
+      {
+        q: "Which sanctuary in Karnataka was declared a critical corridor for the conservation of the Great Indian Bustard and Blackbuck in regional wildlife reviews?",
+        options: ["Ranebennur Blackbuck Sanctuary", "Daroji Bear Sanctuary", "Bhadra Wildlife Sanctuary", "Cauvery Wildlife Sanctuary"],
+        ans: 0,
+        exp: "Ranebennur Blackbuck Sanctuary in Haveri district, Karnataka, is renowned for its blackbuck population and habitat for grassland avian species."
+      },
+      {
+        q: "Which nation officially became the 10th full member of the BRICS grouping during the expanded summits?",
+        options: ["Argentina", "Egypt", "Nigeria", "Indonesia"],
+        ans: 1,
+        exp: "Egypt, Ethiopia, Iran, and UAE officially joined BRICS as full members (Argentina declined under President Milei)."
+      },
+      {
+        q: "Consider the following statements regarding the 'IMEC' (India-Middle East-Europe Economic Corridor):\n1. It consists of an East Corridor connecting India to the Arabian Gulf and a Northern Corridor connecting the Gulf to Europe.\n2. It includes a railway link, electricity cable, clean hydrogen pipeline, and data cable.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "IMEC encompasses two distinct corridors (East & Northern) and incorporates multi-modal transit along with energy and digital connectivity links."
+      },
+      {
+        q: "The 'Shanghai Cooperation Organization' (SCO) Secretariat is located at:",
+        options: ["Tashkent", "Astana", "Beijing", "Bishkek"],
+        ans: 2,
+        exp: "The Secretariat of SCO is headquartered in Beijing, China, while its RATS (Regional Anti-Terrorist Structure) is based in Tashkent, Uzbekistan."
+      },
+      {
+        q: "What is the primary objective of the 'BMT (BIMSTEC Master Plan for Transport Connectivity)'?",
+        options: ["Creating a common currency for South and Southeast Asia", "Connecting landlocked North-Eastern India to coastal ports in Myanmar and Bangladesh", "Establishing a visa-free travel zone in South Asia", "Building a trans-national power grid across ASEAN"],
+        ans: 1,
+        exp: "BIMSTEC transport connectivity focuses on seamlessly linking India's Northeast with Myanmar and Bangladesh ports (e.g., Kaladan and Chittagong)."
+      },
+      {
+        q: "Which country assumed the presidency of G20 for the term commencing December 1, 2025 into 2026?",
+        options: ["South Africa", "Brazil", "United States", "Australia"],
+        ans: 0,
+        exp: "South Africa held the G20 Presidency for 2025-2026, completing the cycle of four consecutive developing country presidencies (Indonesia, India, Brazil, South Africa)."
+      },
+      {
+        q: "What is 'INS Arighat', which was highlighted in Indian Naval developments?",
+        options: ["Guided missile destroyer", "Second Arihant-class nuclear-powered ballistic missile submarine (SSBN)", "Aircraft carrier", "Stealth frigate"],
+        ans: 1,
+        exp: "INS Arighat is India's second indigenous nuclear-powered ballistic missile submarine, strengthening the sea-based leg of the nuclear triad."
+      },
+      {
+        q: "Consider the following statements regarding the 'Agnipath Scheme':\n1. Candidates recruited under the scheme are known as Agniveers.\n2. Upon completion of 4 years of service, 100% of Agniveers are mandatory retired without retention options.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 0,
+        exp: "Up to 25% of each batch of Agniveers are enrolled in the regular cadre of the Armed Forces based on merit and performance."
+      },
+      {
+        q: "What is 'Project Seabird', one of the largest naval infrastructure projects in Asia, located in Karnataka?",
+        options: ["Mangaluru Port Project", "Karwar Naval Base", "Malpe Submarine Yard", "Tadadi Commercial Port"],
+        ans: 1,
+        exp: "Project Seabird at INS Kadamba in Karwar, Karnataka, is India's premier naval base development project on the western seaboard."
+      },
+      {
+        q: "The joint military exercise 'EX DUSTLIK' is conducted annually between India and which country?",
+        options: ["Kazakhstan", "Uzbekistan", "Kyrgyzstan", "Tajikistan"],
+        ans: 1,
+        exp: "Exercise DUSTLIK is a bilateral army exercise between India and Uzbekistan focusing on counter-terrorism operations."
+      },
+      {
+        q: "Which central armed police force (CAPF) in India is designated as the primary force for border guarding along the India-Myanmar border?",
+        options: ["Border Security Force (BSF)", "Indo-Tibetan Border Police (ITBP)", "Assam Rifles", "Sashastra Seema Bal (SSB)"],
+        ans: 2,
+        exp: "Assam Rifles guards the 1,643 km long India-Myanmar border and operates under the administrative control of the Ministry of Home Affairs."
+      },
+      {
+        q: "Which historical monument in Karnataka was officially recognized in the tentative list/inscriptions for UNESCO World Heritage Sites under Sacred Ensembles of the Hoysalas?",
+        options: ["Belur, Halebidu, and Somnathapura temples", "Pattadakal and Badami caves", "Hampi and Anegundi structures", "Bidar and Gulbarga forts"],
+        ans: 0,
+        exp: "The Sacred Ensembles of the Hoysalas (Channakeshava temple Belur, Hoysaleswara temple Halebidu, and Keshava temple Somnathapura) are inscribed on the UNESCO World Heritage list."
+      },
+      {
+        q: "With reference to the 'Kantara' folklore tradition highlighted in Karnataka cultural discourse, 'Bhuta Kola' is predominantly practiced in which region?",
+        options: ["Bayaluseeme (Plains)", "Tulu Nadu / Coastal Karnataka", "Kalyana Karnataka", "Malenadu hill tracks"],
+        ans: 1,
+        exp: "Bhuta Kola is an animistic ritual dance performance prevalent among the Tulu-speaking communities in Dakshina Kannada and Udupi districts."
+      },
+      {
+        q: "The 'Kalyana Karnataka Region Development Board' (KKRDB) covers how many districts of Karnataka established under Article 371(J)?",
+        options: ["5 districts", "6 districts", "7 districts", "8 districts"],
+        ans: 2,
+        exp: "KKRDB covers 7 districts in North-Eastern Karnataka: Kalaburagi, Yadgir, Raichur, Bidar, Koppal, Ballari, and Vijayanagara."
+      },
+      {
+        q: "Which GI (Geographical Indication) tagged craft from Karnataka is famous for its lacquered wooden toys?",
+        options: ["Kinhal Toys", "Channapatna Toys", "Bidriware", "Ilkal Sarees"],
+        ans: 1,
+        exp: "Channapatna toys in Ramanagara district are traditional lacquered wooden toys protected under GI status."
+      },
+      {
+        q: "The 'Anna Bhagya' scheme of Karnataka provides financial assistance or free foodgrains under which delivery system?",
+        options: ["Direct Benefit Transfer (DBT) cash equivalent for additional 5 kg rice", "Distribution of pulses only", "Fortified wheat flour distribution in urban areas", "Free breakfast for secondary students"],
+        ans: 0,
+        exp: "Under Anna Bhagya, eligible beneficiaries receive 5 kg foodgrains from FCI and money transferred via DBT for the additional 5 kg allocation."
+      },
+      {
+        q: "Who among the following was awarded the Dadasaheb Phalke Award for outstanding contribution to Indian Cinema in recent national film honors?",
+        options: ["Mithun Chakraborty", "Waheeda Rehman", "Rajinikanth", "Amitabh Bachchan"],
+        ans: 0,
+        exp: "Veteran actor Mithun Chakraborty was conferred the 70th Dadasaheb Phalke Award by the Ministry of Information and Broadcasting."
+      },
+      {
+        q: "The host nation for the 2026 FIFA World Cup is:",
+        options: ["Saudi Arabia", "Jointly hosted by USA, Canada, and Mexico", "Spain, Portugal, and Morocco", "United Kingdom and Ireland"],
+        ans: 1,
+        exp: "The 2026 FIFA World Cup is jointly hosted across 16 cities in North America (USA, Canada, and Mexico)."
+      },
+      {
+        q: "Consider the following statements regarding the 'National Sports Governance Bill' proposed in 2026:\n1. It seeks to set up a National Sports Regulatory Board to grant recognition to Sports Federations.\n2. Age and tenure limits are prescribed for office bearers of National Sports Federations (NSFs).\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "The reform bill aims to enforce transparency, age caps (70 years), tenure limits, and institutional oversight across Indian sports bodies."
+      },
+      {
+        q: "Which Indian city hosted the 2026 World Audio Visual & Entertainment Summit (WAVES)?",
+        options: ["Bengaluru", "Mumbai", "New Delhi", "Hyderabad"],
+        ans: 2,
+        exp: "The inaugural WAVES summit focusing on media, gaming, VFX, and entertainment technologies was hosted in New Delhi."
+      },
+      {
+        q: "What is the name of India's flagship medical value travel portal launched to streamline medical visas and hospital services for international patients?",
+        options: ["Ayushman Bharat Digital Mission", "Heal in India", "Sanjeevani MVT", "Health Tourism India"],
+        ans: 1,
+        exp: "The 'Heal in India' portal facilitates seamless access, medical visa processing, and accreditation verification for global healthcare seekers."
+      },
+      {
+        q: "With reference to the 'Global Innovation Index (GII)', consider the following statements:\n1. It is published annually by the World Intellectual Property Organization (WIPO).\n2. India has consistently improved its rank into the top 40 economies in recent editions.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "GII is published by WIPO. India's rank moved up from 81st in 2015 to 39th-40th position in recent rankings."
+      },
+      {
+        q: "The term 'Dark Oxygen' discovered in deep-ocean mining research during 2026 refers to:",
+        options: ["Oxygen produced in complete ocean darkness by polymetallic nodules acting as natural geobatteries", "Synthetic oxygen molecules used in deep-submersible diving tanks", "Oxygen trapped inside ancient Antarctic permafrost layers", "Ozone depleting compounds generated by oceanic crust subduction"],
+        ans: 0,
+        exp: "Scientists discovered that polymetallic nodules on the seafloor generate electric charge sufficient to split seawater into hydrogen and oxygen without photosynthesis."
+      },
+      {
+        q: "Regarding the 'PM-SURYA GHAR: Muft Bijli Yojana', consider the following statements:\n1. The scheme provides free electricity up to 300 units monthly for 1 crore households.\n2. Financial subsidy is directly provided for installing rooftop solar units.\nWhich of the statements given above is/are correct?",
+        options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+        ans: 2,
+        exp: "PM Surya Ghar scheme targets 1 crore households with up to 300 units of free power by providing central financial assistance for rooftop solar panels."
+      },
+      {
+        q: "Which river basin is associated with the 'Kalasa-Banduri Nala Project' disputed between Karnataka and Goa?",
+        options: ["Cauvery River Basin", "Mahadayi (Mandovi) River Basin", "Krishna River Basin", "Pennar River Basin"],
+        ans: 1,
+        exp: "The Kalasa-Banduri project aims to divert water from the Mahadayi river basin to the Malaprabha river basin to supply drinking water to Belagavi, Dharwad, and Gadag."
+      },
+      {
+        q: "What is the primary objective of 'Project PRAYAS' launched by the International Organization for Migration (IOM) in collaboration with India's MEA?",
+        options: ["Facilitating safe, orderly, and regular migration for Indian workers and professionals abroad", "Resettlement of internally displaced populations in border states", "Preventing illegal wildlife trafficking across maritime borders", "Skill training for rural youth in agricultural technologies"],
+        ans: 0,
+        exp: "PRAYAS (Promoting Regular Assisted Migration for Youth and Skilled Professionals) assists orderly and safe international mobility for Indian workers."
+      }
+    ];
+
+    // STATE VARIABLES
+    let candidateName = "";
+    let currentIndex = 0;
+    let userAnswers = new Array(50).fill(null);
+    let markedStatus = new Array(50).fill(false);
+    let visitedStatus = new Array(50).fill(false);
+    
+    let timerInterval = null;
+    let totalTimeSeconds = 60 * 60; // 60 minutes
+    let timeElapsed = 0;
+    
+    let warningCount = 3;
+    let isExamActive = false;
+
+    // INITIALIZATION
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      visitedStatus[0] = true;
+    });
+
+    // START TEST HANDLER
+    function handleStartTest(e) {
+      e.preventDefault();
+      const inputName = document.getElementById('candidateName').value.trim();
+
+      if(!inputName) return;
+
+      candidateName = inputName;
+      document.getElementById('candidateDisplay').innerText = candidateName;
+
+      // Hide modal, show CBT app
+      document.getElementById('registrationModal').classList.add('hidden');
+      document.getElementById('cbtApp').classList.remove('hidden');
+
+      // Request Fullscreen
+      enterFullscreen();
+
+      // Start Anti-Malpractice Engine
+      initAntiCheatEngine();
+
+      // Start Timer
+      startTimer();
+
+      // Render Question
+      renderQuestion();
+      renderPalette();
+      updatePaletteCounts();
+      isExamActive = true;
+    }
+
+    // FULLSCREEN & ANTI-CHEAT ENGINE
+    function enterFullscreen() {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    }
+
+    function initAntiCheatEngine() {
+      // Prevent Right Click
+      document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+      // Prevent Copy / Paste / Cut / Selection
+      document.addEventListener('copy', (e) => e.preventDefault());
+      document.addEventListener('cut', (e) => e.preventDefault());
+      document.addEventListener('paste', (e) => e.preventDefault());
+
+      // Keyboard Shortcut Interception (F12, Ctrl+Shift+I, Ctrl+C, Ctrl+V, Alt+Tab)
+      document.addEventListener('keydown', (e) => {
+        if (!isExamActive) return;
+        if (
+          e.key === 'F12' || 
+          (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+          (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'u' || e.key === 'a'))
+        ) {
+          e.preventDefault();
+          triggerWarning();
+        }
+      });
+
+      // Window Blur / Visibility Loss Detection
+      window.addEventListener('blur', () => {
+        if (isExamActive) triggerWarning();
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && isExamActive) {
+          triggerWarning();
+        }
+      });
+    }
+
+    function triggerWarning() {
+      if(!isExamActive) return;
+      warningCount--;
+      document.getElementById('warningCountText').innerText = `${warningCount} / 3`;
+
+      if(warningCount <= 0) {
+        alert("Malpractice threshold exceeded! Your test is being auto-submitted.");
+        submitTestPaper(true);
+      } else {
+        document.getElementById('warningModal').classList.remove('hidden');
+      }
+    }
+
+    function resumeTest() {
+      document.getElementById('warningModal').classList.add('hidden');
+      enterFullscreen();
+    }
+
+    // TIMER LOGIC
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        totalTimeSeconds--;
+        timeElapsed++;
+
+        const mins = Math.floor(totalTimeSeconds / 60);
+        const secs = totalTimeSeconds % 60;
+        document.getElementById('timerDisplay').innerText = 
+          `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        if (totalTimeSeconds <= 0) {
+          clearInterval(timerInterval);
+          alert("Time's up! Your assessment will now be submitted automatically.");
+          submitTestPaper(true);
+        }
+      }, 1000);
+    }
+
+    // RENDER QUESTION CARD
+    function renderQuestion() {
+      const qData = rawQuestions[currentIndex];
+      document.getElementById('qNumHeader').innerText = currentIndex + 1;
+      
+      // Handle multiline question text formatting
+      const formattedQ = qData.q.replace(/\n/g, '<br/>');
+      document.getElementById('questionText').innerHTML = formattedQ;
+
+      const optsContainer = document.getElementById('optionsContainer');
+      optsContainer.innerHTML = '';
+
+      qData.options.forEach((optText, optIdx) => {
+        const isChecked = userAnswers[currentIndex] === optIdx;
+        const optHtml = `
+          <div class="relative">
+            <input type="radio" name="optChoice" id="opt_${optIdx}" value="${optIdx}" ${isChecked ? 'checked' : ''} 
+              onchange="selectOption(${optIdx})" class="hidden option-radio">
+            <label for="opt_${optIdx}" class="flex items-start gap-3 p-3.5 sm:p-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-slate-50 cursor-pointer transition">
+              <span class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center font-bold text-xs text-slate-500 shrink-0 mt-0.5">
+                ${String.fromCharCode(65 + optIdx)}
+              </span>
+              <span class="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">${optText}</span>
+            </label>
+          </div>
+        `;
+        optsContainer.insertAdjacentHTML('beforeend', optHtml);
+      });
+
+      // Manage Previous button state
+      document.getElementById('prevBtn').disabled = currentIndex === 0;
+    }
+
+    // OPTION SELECTION
+    function selectOption(idx) {
+      userAnswers[currentIndex] = idx;
+      updatePaletteCounts();
+      renderPalette();
+    }
+
+    function clearResponse() {
+      userAnswers[currentIndex] = null;
+      renderQuestion();
+      updatePaletteCounts();
+      renderPalette();
+    }
+
+    function markForReview() {
+      markedStatus[currentIndex] = !markedStatus[currentIndex];
+      updatePaletteCounts();
+      renderPalette();
+    }
+
+    function saveAndNext() {
+      if (currentIndex < rawQuestions.length - 1) {
+        currentIndex++;
+        visitedStatus[currentIndex] = true;
+        renderQuestion();
+        renderPalette();
+        updatePaletteCounts();
+      }
+    }
+
+    function previousQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+        renderPalette();
+        updatePaletteCounts();
+      }
+    }
+
+    function jumpToQuestion(idx) {
+      currentIndex = idx;
+      visitedStatus[currentIndex] = true;
+      renderQuestion();
+      renderPalette();
+      updatePaletteCounts();
+
+      // Close mobile drawer on jump
+      if(window.innerWidth < 1024) {
+        toggleMobilePalette();
+      }
+    }
+
+    // RENDER SIDEBAR PALETTE
+    function renderPalette() {
+      const grid = document.getElementById('paletteGrid');
+      grid.innerHTML = '';
+
+      for(let i = 0; i < 50; i++) {
+        let btnClass = "bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200"; // Not Visited
+
+        if (i === currentIndex) {
+          btnClass += " ring-2 ring-blue-600 ring-offset-1 font-bold";
+        }
+
+        if (markedStatus[i]) {
+          btnClass = "bg-purple-600 text-white font-bold"; // Marked for review
+        } else if (userAnswers[i] !== null) {
+          btnClass = "bg-emerald-500 text-white font-bold"; // Answered
+        } else if (visitedStatus[i]) {
+          btnClass = "bg-red-500 text-white font-bold"; // Not Answered
+        }
+
+        const btn = document.createElement('button');
+        btn.className = `h-9 w-full rounded-lg text-xs transition flex items-center justify-center ${btnClass}`;
+        btn.innerText = i + 1;
+        btn.onclick = () => jumpToQuestion(i);
+        grid.appendChild(btn);
+      }
+    }
+
+    function updatePaletteCounts() {
+      let ans = 0, notAns = 0, notVis = 0, marked = 0;
+
+      for(let i=0; i<50; i++) {
+        if(markedStatus[i]) marked++;
+        else if(userAnswers[i] !== null) ans++;
+        else if(visitedStatus[i]) notAns++;
+        else notVis++;
+      }
+
+      document.getElementById('cntAnswered').innerText = ans;
+      document.getElementById('cntNotAnswered').innerText = notAns;
+      document.getElementById('cntNotVisited').innerText = notVis;
+      document.getElementById('cntMarked').innerText = marked;
+    }
+
+    function toggleMobilePalette() {
+      const sidebar = document.getElementById('paletteSidebar');
+      sidebar.classList.toggle('translate-x-full');
+    }
+
+    function confirmSubmitTest() {
+      if(confirm("Are you sure you want to submit your UPSC/KPSC practice paper?")) {
+        submitTestPaper(false);
+      }
+    }
+
+    // SUBMIT & SCORE CALCULATION
+    function submitTestPaper(force = false) {
+      isExamActive = false;
+      clearInterval(timerInterval);
+
+      // Score Engine (+2 for Correct, -0.66 for Incorrect)
+      let correct = 0, incorrect = 0, unattempted = 0;
+
+      rawQuestions.forEach((q, i) => {
+        if (userAnswers[i] === null) {
+          unattempted++;
+        } else if (userAnswers[i] === q.ans) {
+          correct++;
+        } else {
+          incorrect++;
+        }
+      });
+
+      const rawScore = (correct * 2.0) - (incorrect * 0.66);
+      const finalScore = Math.max(0, rawScore).toFixed(2);
+      const totalAttempted = correct + incorrect;
+      const accuracy = totalAttempted > 0 ? ((correct / totalAttempted) * 100).toFixed(1) : 0;
+
+      const elapsedMins = Math.floor(timeElapsed / 60);
+      const elapsedSecs = timeElapsed % 60;
+
+      // Render Scorecard UI
+      document.getElementById('resCandidateName').innerText = `Student: ${candidateName}`;
+      document.getElementById('resScore').innerText = `${finalScore} / 100`;
+      document.getElementById('resAccuracy').innerText = `${accuracy}%`;
+      document.getElementById('resAttempted').innerText = `${totalAttempted} / 50`;
+      document.getElementById('resTimeTaken').innerText = `${elapsedMins}m ${elapsedSecs}s`;
+      document.getElementById('resCorrect').innerText = correct;
+      document.getElementById('resIncorrect').innerText = incorrect;
+      document.getElementById('resUnattempted').innerText = unattempted;
+
+      // Render Solutions
+      renderSolutions();
+
+      // Show Result Dashboard
+      document.getElementById('cbtApp').classList.add('hidden');
+      document.getElementById('warningModal').classList.add('hidden');
+      document.getElementById('resultApp').classList.remove('hidden');
+    }
+
+    // RENDER DETAILED SOLUTIONS
+    function renderSolutions() {
+      const solContainer = document.getElementById('solutionsContainer');
+      solContainer.innerHTML = '';
+
+      rawQuestions.forEach((q, i) => {
+        const uAns = userAnswers[i];
+        const isCorrect = uAns === q.ans;
+        const isSkipped = uAns === null;
+
+        let statusBadge = '';
+        if (isSkipped) {
+          statusBadge = '<span class="bg-slate-100 text-slate-600 text-[11px] font-bold px-2.5 py-0.5 rounded">Unattempted</span>';
+        } else if (isCorrect) {
+          statusBadge = '<span class="bg-emerald-100 text-emerald-700 text-[11px] font-bold px-2.5 py-0.5 rounded">+2.0 Correct</span>';
+        } else {
+          statusBadge = '<span class="bg-red-100 text-red-700 text-[11px] font-bold px-2.5 py-0.5 rounded">-0.66 Incorrect</span>';
+        }
+
+        const formattedQ = q.q.replace(/\n/g, '<br/>');
+
+        const card = `
+          <div class="border border-slate-200 rounded-xl p-4 sm:p-5 bg-white shadow-sm space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+              <span class="text-xs font-bold text-slate-500">Question ${i + 1}</span>
+              ${statusBadge}
+            </div>
+            
+            <p class="text-sm font-medium text-slate-800 leading-relaxed">${formattedQ}</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+              ${q.options.map((opt, oIdx) => {
+                let optStyle = 'border-slate-200 bg-slate-50 text-slate-700';
+                if (oIdx === q.ans) {
+                  optStyle = 'border-emerald-500 bg-emerald-50 text-emerald-800 font-semibold';
+                } else if (oIdx === uAns && !isCorrect) {
+                  optStyle = 'border-red-400 bg-red-50 text-red-800 font-semibold';
+                }
+                return `
+                  <div class="p-2.5 rounded-lg border ${optStyle} flex items-center gap-2">
+                    <span class="font-bold">${String.fromCharCode(65 + oIdx)}.</span>
+                    <span>${opt}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="mt-3 bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-slate-700 space-y-1">
+              <span class="font-bold text-blue-800 flex items-center gap-1"><i data-lucide="info" class="w-3.5 h-3.5"></i> Explanation:</span>
+              <p class="leading-relaxed text-slate-600">${q.exp}</p>
+            </div>
+          </div>
+        `;
+        solContainer.insertAdjacentHTML('beforeend', card);
+      });
+      lucide.createIcons();
+    }
+
+    // PDF GENERATION & EXPORT ENGINE
+    function downloadPDFResponseSheet() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Header Banner
+      doc.setFillColor(15, 23, 42); // slate-900
+      doc.rect(0, 0, 210, 32, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("UPSC & KPSC Civil Services Prelims 2026", 14, 14);
+      
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text("Candidate Official Response Sheet & Answer Key", 14, 22);
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, 160, 22);
+
+      // Student Score Details Box
+      let correct = 0, incorrect = 0, unattempted = 0;
+      rawQuestions.forEach((q, i) => {
+        if (userAnswers[i] === null) unattempted++;
+        else if (userAnswers[i] === q.ans) correct++;
+        else incorrect++;
+      });
+      const rawScore = (correct * 2.0) - (incorrect * 0.66);
+      const finalScore = Math.max(0, rawScore).toFixed(2);
+
+      doc.setDrawColor(226, 232, 240);
+      doc.setFillColor(248, 250, 252);
+      doc.roundedRect(14, 38, 182, 24, 3, 3, 'FD');
+
+      doc.setTextColor(30, 41, 59);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.text(`Candidate Name: ${candidateName}`, 20, 46);
+      doc.text(`Total Score: ${finalScore} / 100`, 20, 55);
+
+      doc.setFont("helvetica", "normal");
+      doc.text(`Correct: ${correct}  |  Incorrect: ${incorrect}  |  Unattempted: ${unattempted}`, 110, 46);
+      doc.text(`Test Duration: 60 Mins`, 110, 55);
+
+      // Response Data Table
+      const tableRows = rawQuestions.map((q, idx) => {
+        const uAns = userAnswers[idx];
+        const uAnsChar = uAns !== null ? String.fromCharCode(65 + uAns) : "Skipped";
+        const cAnsChar = String.fromCharCode(65 + q.ans);
+        const status = uAns === null ? "UNATTEMPTED" : (uAns === q.ans ? "CORRECT (+2.0)" : "WRONG (-0.66)");
+
+        return [
+          `Q${idx + 1}`,
+          q.q.length > 55 ? q.q.substring(0, 55) + "..." : q.q,
+          uAnsChar,
+          cAnsChar,
+          status
+        ];
+      });
+
+      doc.autoTable({
+        startY: 68,
+        head: [['#', 'Question Summary', 'Your Choice', 'Correct Key', 'Result Status']],
+        body: tableRows,
+        theme: 'striped',
+        headStyles: { fillStyle: [37, 99, 235], fontSize: 9, fontStyle: 'bold' },
+        bodyStyles: { fontSize: 8 },
+        columnStyles: {
+          0: { cellWidth: 12 },
+          1: { cellWidth: 100 },
+          2: { cellWidth: 25, halign: 'center' },
+          3: { cellWidth: 25, halign: 'center' },
+          4: { cellWidth: 28, halign: 'center' }
+        },
+        didParseCell: function(data) {
+          if (data.section === 'body' && data.column.index === 4) {
+            const txt = data.cell.raw;
+            if (txt.includes('CORRECT')) {
+              data.cell.styles.textColor = [16, 185, 129];
+              data.cell.styles.fontStyle = 'bold';
+            } else if (txt.includes('WRONG')) {
+              data.cell.styles.textColor = [239, 68, 68];
+              data.cell.styles.fontStyle = 'bold';
+            } else {
+              data.cell.styles.textColor = [100, 116, 139];
+            }
+          }
+        }
+      });
+
+      // Save PDF
+      doc.save(`${candidateName.replace(/\s+/g, '_')}_UPSC_KPSC_2026_ResponseSheet.pdf`);
+    }
+  </script>
+</body>
+</html>
